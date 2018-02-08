@@ -1,68 +1,81 @@
 {\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
-{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;\f2\fnil\fcharset0 Menlo-Italic;
-}
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
 {\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red255\green255\blue255;}
 {\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\csgray\c100000;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww8500\viewh12460\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-\f0\fs24 \cf0 Level1 : \
+\f0\b\fs26 \cf0 \ul \ulc0 GIT GAME SOLUTIONS _ JULIE LENOIR\ulnone \
 \
+Level1: \
+
+\b0 \
 
 \i I use the log to find previous commits, and when I have identify the commit I am interest in, here the one with the commit message \'ab\'a0Hello world\'a0\'bb, I only need to remember the 4 first numbers of the commit ID, and type in the following command line: 
 \i0 \
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
-
-\f1\fs36 \cf2 \cb3 \CocoaLigature0 git checkout 6402\
-\
-Level 2:\
+\cf2 \cb3 \CocoaLigature0 git checkout 6402\
 \
 
-\f2\i I checked the list of branches on GitHub and found the one that as a name answering the riddle: \'91bug\'92. Next I need to type in the following command line: 
-\f1\i0 \
+\b Level 2:
+\b0 \
+\
+
+\i I checked the list of branches on GitHub and found the one that as a name answering the riddle: \'91bug\'92. Next I need to type in the following command line: 
+\i0 \
 \
 git checkout bug\
 \
-Level 3: \
+
+\b Level 3: 
+\b0 \
 \
 
-\f2\i In order to look at the revisions of the file cool.cpp I typed: \
+\i In order to look at the revisions of the file cool.cpp I typed: \
 \
 
-\f1\i0 git blame cool.cpp\
+\i0 git blame cool.cpp\
 
-\f2\i \
+\i \
 And when I saw the modification, I could find the evil Mastermind, and just needed to type: \
 \
 
-\f1\i0 git checkout LinusTorvalds2014\
-\
-Level 4: \
+\i0 git checkout LinusTorvalds2014\
 \
 
-\f2\i I found the .gitignore file in my local repo. It was a hidden file but long ago I used a command line that asked my computer to show all hidden files so I could see it and open it.
-\f1\i0 \
-\
-Level 5: \
+\b Level 4: 
+\b0 \
 \
 
-\f2\i The answer is a tree. Therefore I type in: \
+\i I found the .gitignore file in my local repo. It was a hidden file but long ago I used a command line that asked my computer to show all hidden files so I could see it and open it.
+\i0 \
 \
 
-\f1\i0 git checkout tree\
-\
-Level 6: \
+\b Level 5: 
+\b0 \
 \
 
-\f2\i I needed to input the FILE name into the indicated command, and the FILE was exactly 
-\f1\i0 nextclue_input.cpp. 
-\f2\i Therefore I just typed: 
-\f1\i0 \
+\i The answer is a tree. Therefore I type in: \
+\
+
+\i0 git checkout tree\
+\
+
+\b Level 6: 
+\b0 \
+\
+
+\i I needed to input the FILE name into the indicated command, and the FILE was exactly 
+\i0 nextclue_input.cpp. 
+\i Therefore I just typed: 
+\i0 \
 \
 ./outputclue.sh nextclue_input.cpp\
 \
-Level 7: \
+
+\b Level 7: (not working here)
+\b0 \
 \
 git checkout code4life\
 git status\
@@ -71,7 +84,9 @@ git checkout tree\
 git merge code4life\
 ./outputclue.sh nextclue_input.cpp\
 \
-Level 8: \
+
+\b Level 8: 
+\b0 \
 \
 git checkout mouse\
 git diff HEAD^}

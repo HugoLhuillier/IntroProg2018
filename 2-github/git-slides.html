@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-<title>git-and-github-part1 slides</title>
+<title>git-and-github slides</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -12720,6 +12720,1667 @@ Date:   Tue Jan 16 10:01:11 2018 +0100
 <li><strong>Important</strong>: <code>Git</code> tracks only files, not directories per se</li>
 <li>However, if you have a sub-directory and want to commit the changes made in all the files in this directory, you can run <div class="highlight"><pre><span></span>git add &lt;name-of-that-sub-directory&gt;
 </pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exploring-history">Exploring history<a class="anchor-link" href="#Exploring-history">&#182;</a></h1><ul>
+<li>Every commit has its own identifiers</li>
+<li>The most recent commit is called <code>HEAD</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">show</span> <span class="n">HEAD</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>commit 089ad21f070b5420227111a0845cf91159f7887f
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 10:01:11 2018 +0100
+
+    discuss concerns about mars&#39; climate for mummy
+
+diff --git a/mars.txt b/mars.txt
+index 315bf3a..b36abfd 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1,2 +1,3 @@
+ Cold and dry, but everything is my favorite color
+ The two moons may be a problem for Wolfman
++But the Mummy will appreciate the lack of humidity
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">show</span> <span class="n">HEAD</span><span class="o">~</span><span class="mi">1</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>commit 8ed65cf6864dd9eba43f9944e9844246ad87816c
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 09:59:21 2018 +0100
+
+    add concerns about effects of Mars&#39; moons on Wolfram
+
+diff --git a/mars.txt b/mars.txt
+index df0654a..315bf3a 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre><span class="ansi-yellow-intense-fg ansi-bold">WARNING: </span><span class="ansi-yellow-fg">special characters &#34;#{}()[]&lt;&gt;|&amp;*?~;&#34; should now be quoted in commands</span>
+Stacktrace:
+ [1] <span class="ansi-bold">depwarn</span><span class="ansi-bold">(</span>::String, ::Symbol<span class="ansi-bold">)</span> at <span class="ansi-bold">./deprecated.jl:70</span>
+ [2] <span class="ansi-bold">warn_shell_special</span><span class="ansi-bold">(</span>::String<span class="ansi-bold">)</span> at <span class="ansi-bold">./shell.jl:8</span>
+ [3] <span class="ansi-bold">#shell_parse#236</span><span class="ansi-bold">(</span>::String, ::Function, ::String, ::Bool<span class="ansi-bold">)</span> at <span class="ansi-bold">./shell.jl:103</span>
+ [4] <span class="ansi-bold">(::Base.#kw##shell_parse)</span><span class="ansi-bold">(</span>::Array{Any,1}, ::Base.#shell_parse, ::String, ::Bool<span class="ansi-bold">)</span> at <span class="ansi-bold">./&lt;missing&gt;:0</span> (repeats 2 times)
+ [5] <span class="ansi-bold">@cmd</span><span class="ansi-bold">(</span>::ANY<span class="ansi-bold">)</span> at <span class="ansi-bold">./process.jl:796</span>
+ [6] <span class="ansi-bold">include_string</span><span class="ansi-bold">(</span>::String, ::String<span class="ansi-bold">)</span> at <span class="ansi-bold">./loading.jl:522</span>
+ [7] <span class="ansi-bold">include_string</span><span class="ansi-bold">(</span>::Module, ::String, ::String<span class="ansi-bold">)</span> at <span class="ansi-bold">/Users/hugolhuillier/.julia/v0.6/Compat/src/Compat.jl:174</span>
+ [8] <span class="ansi-bold">execute_request</span><span class="ansi-bold">(</span>::ZMQ.Socket, ::IJulia.Msg<span class="ansi-bold">)</span> at <span class="ansi-bold">/Users/hugolhuillier/.julia/v0.6/IJulia/src/execute_request.jl:154</span>
+ [9] <span class="ansi-bold">(::Compat.#inner#16{Array{Any,1},IJulia.#execute_request,Tuple{ZMQ.Socket,IJulia.Msg}})</span><span class="ansi-bold">(</span><span class="ansi-bold">)</span> at <span class="ansi-bold">/Users/hugolhuillier/.julia/v0.6/Compat/src/Compat.jl:496</span>
+ [10] <span class="ansi-bold">eventloop</span><span class="ansi-bold">(</span>::ZMQ.Socket<span class="ansi-bold">)</span> at <span class="ansi-bold">/Users/hugolhuillier/.julia/v0.6/IJulia/src/eventloop.jl:8</span>
+ [11] <span class="ansi-bold">(::IJulia.##14#17)</span><span class="ansi-bold">(</span><span class="ansi-bold">)</span> at <span class="ansi-bold">./task.jl:335</span>
+while loading In[17], in expression starting on line 1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Exploring-history">Exploring history<a class="anchor-link" href="#Exploring-history">&#182;</a></h1><ul>
+<li>Instead of <code>HEAD</code>, can also refer to commits via their actual identifiers</li>
+<li>Only the first few characters are necessary</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">log</span> <span class="o">-</span><span class="mi">2</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>commit 089ad21f070b5420227111a0845cf91159f7887f
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 10:01:11 2018 +0100
+
+    discuss concerns about mars&#39; climate for mummy
+
+commit 8ed65cf6864dd9eba43f9944e9844246ad87816c
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 09:59:21 2018 +0100
+
+    add concerns about effects of Mars&#39; moons on Wolfram
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">show</span> <span class="mi">8</span><span class="n">ed65c</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>commit 8ed65cf6864dd9eba43f9944e9844246ad87816c
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 09:59:21 2018 +0100
+
+    add concerns about effects of Mars&#39; moons on Wolfram
+
+diff --git a/mars.txt b/mars.txt
+index df0654a..315bf3a 100644
+--- a/mars.txt
++++ b/mars.txt
+@@ -1 +1,2 @@
+ Cold and dry, but everything is my favorite color
++The two moons may be a problem for Wolfman
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Recovering-files">Recovering files<a class="anchor-link" href="#Recovering-files">&#182;</a></h1><ul>
+<li>Suppose that we overwrote <code>mars.txt</code> and would like to come back to the previous version</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>We will need to manufacture our own oxygen
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">status</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>On branch master
+Changes not staged for commit:
+  (use &#34;git add &lt;file&gt;...&#34; to update what will be committed)
+  (use &#34;git checkout -- &lt;file&gt;...&#34; to discard changes in working directory)
+
+	modified:   mars.txt
+
+no changes added to commit (use &#34;git add&#34; and/or &#34;git commit -a&#34;)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">checkout</span> <span class="n">HEAD</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div><aside class="notes">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>git checkout checks out (i.e., restores) an old version of a file. In this case, we’re telling Git that we want to recover the version of the file recorded in HEAD, which is the last saved commit. If we want to go back even further, we can use a commit identifier instead.</p>
+
+</div>
+</div>
+</div>
+</aside></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Recovering-files">Recovering files<a class="anchor-link" href="#Recovering-files">&#182;</a></h1><ul>
+<li>If do not specify <code>mars.txt</code>, all the files in the directory will be reverted to their previous state</li>
+<li>Here, used <div class="highlight"><pre><span></span>git checkout HEAD mars.txt
+</pre></div>
+because the (wrong) changes we made weren't commited </li>
+<li>If had been commited, would have used <div class="highlight"><pre><span></span>git checkout HEAD~1 mars.txt
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Recovering-files">Recovering files<a class="anchor-link" href="#Recovering-files">&#182;</a></h1><ul>
+<li>Especially when using version control, try to organize your work in a clever way</li>
+<li>In particular, try to keep the documents' sizes relatively small<ul>
+<li>Easier to recover past work when dealing with several small files rather than one big files  </li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Ignoring-things">Ignoring things<a class="anchor-link" href="#Ignoring-things">&#182;</a></h1><ul>
+<li>It is likely that there are files in your directory that you want Git to ignore </li>
+<li>For that, create a file called <code>.gitignore</code> and that lists all these files to be ignored</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Ex:</strong> <ol>
+<li>create blank files <code>a.dat</code> and <code>b.dat</code></li>
+<li>create a new directory called results, and in it, blank files, <code>a.out</code> and <code>b.out</code></li>
+<li>tell Git to ignore these four files</li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span>mkdir results
+touch a.dat b.dat results/a.out results/b.out
+nano .gitignore
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="o">.</span><span class="n">gitignore</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>*.dat
+results/
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Do not forget to commit this file!<div class="highlight"><pre><span></span>git add .gitignore
+git commit -m <span class="s2">&quot;add .gitignore&quot;</span>
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Ignoring-things">Ignoring things<a class="anchor-link" href="#Ignoring-things">&#182;</a></h1><ul>
+<li>If try to <code>add</code> some files listed in the <code>.gitignore</code>, <code>Git</code> will not let that happen</li>
+<li>If want to override <code>.gitignore</code>, use the flag <code>-f</code>. Ex:<div class="highlight"><pre><span></span>git add -f a.dat
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Git-&amp;-Github">Git &amp; Github<a class="anchor-link" href="#Git-&amp;-Github">&#182;</a></h1><ul>
+<li>Instead of storing all the info on our laptop, can store it on <code>Github</code><ol>
+<li>create a new repository</li>
+<li>need to connect this repo with the one we have on our local machine = making the GitHub repository a remote for the local repository<div class="highlight"><pre><span></span>git remote add origin https://github.com/HugoLhuillier/planets.git
+</pre></div>
+</li>
+</ol>
+</li>
+<li><code>origin</code> is just a name we give to the remote repository</li>
+<li>remote (n.): a version control repository connected to another, in such way that both can be kept in sync exchanging commits</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">remote</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>origin	https://github.com/HugoLhuillier/planets.git (fetch)
+origin	https://github.com/HugoLhuillier/planets.git (push)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">log</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>commit ed3b2a379e6076251cb133dd016caab43073d407
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 11:27:42 2018 +0100
+
+    add .gitignore
+
+commit 089ad21f070b5420227111a0845cf91159f7887f
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 10:01:11 2018 +0100
+
+    discuss concerns about mars&#39; climate for mummy
+
+commit 8ed65cf6864dd9eba43f9944e9844246ad87816c
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 09:59:21 2018 +0100
+
+    add concerns about effects of Mars&#39; moons on Wolfram
+
+commit 86360f57243f9a961e6fa46592b47dd2c188f424
+Author: Hugo Lhuillier &lt;hugo.lhu@gmail.com&gt;
+Date:   Tue Jan 16 09:58:45 2018 +0100
+
+    start notes on Mars as a base
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>To https://github.com/HugoLhuillier/planets.git
+ * [new branch]      master -&gt; master
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div><aside class="notes">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Therefore here</p>
+<ol>
+<li><code>push</code> to the remote called <code>origin</code></li>
+<li><code>push</code> to the branch call <code>master</code></li>
+</ol>
+
+</div>
+</div>
+</div>
+</aside></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://swcarpentry.github.io/git-novice/fig/github-repo-after-first-push.svg"></p>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Git-&amp;-Github">Git &amp; Github<a class="anchor-link" href="#Git-&amp;-Github">&#182;</a></h1><ul>
+<li>If some changes are made on the remote repository (e.g. by you directly on Github, or by one of your collaborator), can pull these changes to your local repository via <code>git pull</code> </li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Already up-to-date.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>From https://github.com/HugoLhuillier/planets
+ * branch            master     -&gt; FETCH_HEAD
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Create a <code>README.md</code> file on Github</li>
+</ul>
+
+</div>
+</div>
+</div></div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[73]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Updating ed3b2a3..4db0bc9
+Fast-forward
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 README.md
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>From https://github.com/HugoLhuillier/planets
+ * branch            master     -&gt; FETCH_HEAD
+   ed3b2a3..4db0bc9  master     -&gt; origin/master
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[75]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">ls</span> <span class="o">-</span><span class="n">F</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>README.md
+a.dat
+b.dat
+mars.txt
+results/
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conflicts">Conflicts<a class="anchor-link" href="#Conflicts">&#182;</a></h1><ul>
+<li>Particularly salient when working with other people </li>
+<li><strong>Exercice:</strong><ol>
+<li>Go on your Githuh repo, and modify the content of <code>README.md</code> to <blockquote><p>this is a test repo</p>
+</blockquote>
+</li>
+<li>Without pulling these changes, modify the <code>README.md</code> on your local repository to <blockquote><p>a test repo</p>
+</blockquote>
+</li>
+<li>Commit these changes (locally)</li>
+<li>Try to push these changes</li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre># planets
+a test repo
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">add</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;update README.md&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[master af26722] update README.md
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>To https://github.com/HugoLhuillier/planets.git
+ ! [rejected]        master -&gt; master (fetch first)
+error: failed to push some refs to &#39;https://github.com/HugoLhuillier/planets.git&#39;
+hint: Updates were rejected because the remote contains work that you do
+hint: not have locally. This is usually caused by another repository pushing
+hint: to the same ref. You may want to first integrate the remote changes
+hint: (e.g., &#39;git pull ...&#39;) before pushing again.
+hint: See the &#39;Note about fast-forwards&#39; in &#39;git push --help&#39; for details.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conflicts">Conflicts<a class="anchor-link" href="#Conflicts">&#182;</a></h1><ul>
+<li>So far, not a conflict per se, simply that we haven't updated our local repository</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>From https://github.com/HugoLhuillier/planets
+ * branch            master     -&gt; FETCH_HEAD
+   4db0bc9..a03e822  master     -&gt; origin/master
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Now we have a conflict (the changes made in one copy of the repo overlap with those made in the other copy) 
+<img src="https://swcarpentry.github.io/git-novice/fig/conflict.svg"></li>
+<li>We have to resolve it manually (with the help of Git)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre># planets
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+a test repo
+=======
+this is a test repo 
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; a03e8222bef054d4a69d8dd171ece8d7a7bdca89
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Our change on the local repo is preceded by <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code></li>
+<li><code>=======</code> separates the conflicting changes</li>
+<li><code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> marks the end of the content download from Github (with the commit associated)</li>
+<li>Up to you to remove these markers and resolve the conflict</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conflicts">Conflicts<a class="anchor-link" href="#Conflicts">&#182;</a></h1><ul>
+<li>To resolve any conflict<ol>
+<li>modify the file(s) affected</li>
+<li>commit the changes</li>
+<li>push the new commit (= the merge)</li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre># planets
+this is a test repo
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">add</span> <span class="n">README</span><span class="o">.</span><span class="n">md</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">status</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>On branch master
+All conflicts fixed but you are still merging.
+  (use &#34;git commit&#34; to conclude merge)
+
+Changes to be committed:
+
+	modified:   README.md
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;merge README.md&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[master 3c40fe9] merge README.md
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>To https://github.com/HugoLhuillier/planets.git
+   a03e822..3c40fe9  master -&gt; master
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conflicts">Conflicts<a class="anchor-link" href="#Conflicts">&#182;</a></h1><ul>
+<li>Resolving conflicts is a pain <em>#UN</em></li>
+<li>To minimize them<ul>
+<li>pull from upstream more frequently</li>
+<li>try as much as possible to break large files into smaller ones</li>
+<li>make smaller commits</li>
+</ul>
+</li>
+<li>And also, when working in groups<ul>
+<li>clarify which collaborator is responsible for what part of the code</li>
+<li>establish a project convention to avoid stylistic conflict (e.g. <strong>tabs vs. spaces</strong>)</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Branches">Branches<a class="anchor-link" href="#Branches">&#182;</a></h1><ul>
+<li>Branches allow you to work on some part of the code without affecting the main line of development (the main branch)</li>
+<li>Branches are very handy for instance when want to introduce new features, but not certain if these are going to work</li>
+<li>To use a branch<ol>
+<li>Create a branch</li>
+<li>Work on it as much as you want (commits, push, pull etc. work similarly)</li>
+<li>When you are done, you can merge this branch to the main branch (= master) - with potential conflicts</li>
+</ol>
+</li>
+</ul>
+<p><img src="ex-branch.png"></p>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Branches">Branches<a class="anchor-link" href="#Branches">&#182;</a></h1><ul>
+<li>Some basic command:<div class="highlight"><pre><span></span>git branch            <span class="c1"># list all existing branches</span>
+git branch &lt;name&gt;     <span class="c1"># create a branch named &lt;name&gt;</span>
+git branch -m &lt;name&gt;  <span class="c1"># rename the branch we are on to &lt;name&gt;</span>
+git branch -d &lt;name&gt;  <span class="c1"># delete the branch &lt;name&gt; IF merged</span>
+git branch -D &lt;name&gt;  <span class="c1"># delete the branch &lt;name&gt; even if not merged</span>
+</pre></div>
+</li>
+<li><code>git checkout &lt;name&gt;</code> tells <code>Git</code> to go to the branch <code>name</code></li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Branches">Branches<a class="anchor-link" href="#Branches">&#182;</a></h1><ul>
+<li><strong>Ex</strong>: create a new branch to work on potential changes to <code>mars.txt</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">branch</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>* master
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">branch</span> <span class="n">mars</span><span class="o">-</span><span class="n">second</span><span class="o">-</span><span class="n">verse</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">branch</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  mars-second-verse
+* master
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">checkout</span> <span class="n">mars</span><span class="o">-</span><span class="n">second</span><span class="o">-</span><span class="n">verse</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>M	mars.txt
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>Switched to branch &#39;mars-second-verse&#39;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+
+I am bad at poetry
+So bad I cannot write poetry
+Oh - why I am so bad?
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">add</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s">&quot;add second verse&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">mars</span><span class="o">-</span><span class="n">second</span><span class="o">-</span><span class="n">verse</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>M	mars.txt
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>Switched to branch &#39;master&#39;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-julia"><pre><span></span><span class="p">;</span> <span class="n">cat</span> <span class="n">mars</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cold and dry, but everything is my favorite color
+The two moons may be a problem for Wolfman
+But the Mummy will appreciate the lack of humidity
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Merging-branches">Merging branches<a class="anchor-link" href="#Merging-branches">&#182;</a></h1><ul>
+<li>Two options<ol>
+<li><em>own work</em>: do a local merge via <code>git merge</code><div class="highlight"><pre><span></span>git merge &lt;branch&gt;
+</pre></div>
+will add the changes made in <branch> to the branch we are currently on</li>
+<li><em>collab</em>: do a pull request on <code>Github</code></li>
+</ol>
+</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>With our previous example<div class="highlight"><pre><span></span>git checkout master 
+git merge mars-second-verse
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Fork">Fork<a class="anchor-link" href="#Fork">&#182;</a></h1><ul>
+<li>Forking: cloning a Github project and registering it under your Github username</li>
+<li>Can make changes without affecting the original project</li>
+<li>Can update your version with changes mades to the original project (= <strong>upstream</strong>)</li>
+<li>Can make changes upstream (= <strong>a pull request</strong>)</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Forking-a-repository">Forking a repository<a class="anchor-link" href="#Forking-a-repository">&#182;</a></h1><ul>
+<li>Go to the repository of your choice, and fork it</li>
+<li>Create a local clone of your work</li>
+<li>Setup an upstream repository</li>
+</ul>
+
+</div>
+</div>
+</div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Forking-IntroProg2018">Forking IntroProg2018<a class="anchor-link" href="#Forking-IntroProg2018">&#182;</a></h1><ul>
+<li>Fork IntroProg2018, navigate to your forked repository on your profile, and copy the address under "Clone or download"</li>
+<li>In your directory of your choice, make a local copy of your repo (a clone). <code>git clone</code> will automatically setup your forked repository as the <em>origin</em> remote <div class="highlight"><pre><span></span>git clone https://github.com/YOUR-USERNAME/IntroProg2018
+</pre></div>
+</li>
+<li>Configure Git to pull changes from the upstream repository (same command as before, but call the new remote <em>upstream</em> instead of <em>origin</em>)<div class="highlight"><pre><span></span>git remote add upstream https://github.com/HugoLhuillier/IntroProg2018.git
+</pre></div>
+</li>
+<li>Check it worked by running<div class="highlight"><pre><span></span>git remote -v
+</pre></div>
+</li>
+<li>To sync your local remote, <div class="highlight"><pre><span></span>git pull upstream master
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div><aside class="notes">
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li><strong>Careful</strong>: potential conflicts ahead... Alternatively, <div class="highlight"><pre><span></span>git fetch upstream 
+git checkout master 
+git merge upstream/master
+</pre></div>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+</aside></section></section><section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Pull-request">Pull request<a class="anchor-link" href="#Pull-request">&#182;</a></h1><ul>
+<li>Similar to pushing to your remote repository, except that your pushing to somebody else's</li>
+<li>Allows to discuss and review the changes made, and add follow-up commit before the changes are merged</li>
+</ul>
+
+</div>
+</div>
+</div><div class="fragment">
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>To do a pull request:<ul>
+<li>Push some changes to your remote personal repository</li>
+<li>Go on its Github page, and click on pull request</li>
+<li>Add comments etc. </li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div></div></section><section>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Pull-request-&amp;-homework">Pull request &amp; homework<a class="anchor-link" href="#Pull-request-&amp;-homework">&#182;</a></h1><ul>
+<li>Will use pull request for homework</li>
+<li>Idea:<ol>
+<li>do the homework on your computer</li>
+<li>push it to your remote repository</li>
+<li>pull request to my repository so that I can see what you've done</li>
+</ol>
 </li>
 </ul>
 

@@ -1,0 +1,401 @@
+MacBook-Pro-de-Nicolas:git-game Nico$ git clone https://github.com/hgarc014/git-game.git
+Cloning into 'git-game'...
+remote: Counting objects: 243, done.
+remote: Total 243 (delta 0), reused 0 (delta 0), pack-reused 243
+Receiving objects: 100% (243/243), 1.25 MiB | 436.00 KiB/s, done.
+Resolving deltas: 100% (86/86), done.
+MacBook-Pro-de-Nicolas:git-game Nico$ cat README.md
+# Welcome to the git-game!! 
+
+This is a terminal game designed to test your knowledge of git commands.
+Each level in the game is a task to perform on this repo.
+Once you perform that task, you will be given your next task.
+  There are a total of ten levels, each one harder than last!
+
+### Let's get this journey started!! 
+Clone this repository by running:
+
+```
+$ git clone https://github.com/hgarc014/git-game.git
+```
+**Don't know a lot about git??**
+
+Then you should check these files for assistance:
+
+https://github.com/mikeizbicki/ucr-cs100/blob/2015winter/textbook/cheatsheets/git-cheatsheet.md
+
+https://github.com/mikeizbicki/ucr-cs100/tree/2015winter/textbook/tools/git/advanced-git
+
+Otherwise, you are free to continue...
+
+**You can win a badge for completing this game!**
+
+learn more about badges here: https://openbadgefactory.com/faq
+
+**You should always check the README.md file for your next clue!**
+
+``Level 1``
+
+Your first task is to checkout the commit whose commit message is the answer to this question: 
+
+> When a programmer is born, what is the first thing he/she learns to say?
+
+MacBook-Pro-de-Nicolas:git-game Nico$ print Hello World!
+-bash: print: command not found
+MacBook-Pro-de-Nicolas:git-game Nico$ git log
+commit d851edda3009332dd5d3f8f949a102f279dad809 (HEAD -> master, origin/master, origin/HEAD)
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 21:03:04 2015 -0700
+
+    updated README for badge notification
+
+commit 7c8c3ccc2f4bb118a657f1f7a7ab4e163d1b7a30
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:57:08 2015 -0700
+
+    added level1
+
+commit 228389a54073ed1e6ec98e3bfa59039b416efd4d
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:56:34 2015 -0700
+
+    added welcome screen
+
+commit db99f2d9df4b2288d29a97d2d04a1703b4f3c107
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:35 2015 -0700
+
+    updated README
+
+commit 640273807f9bac8af03575f82b788663d4b99927
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:07 2015 -0700
+
+    Hello World!
+
+commit 8cafb7c87b129686da362b14c3f3c750c1fe4bf5 (origin/vector, origin/map, orig...skipping...
+
+                   SUMMARY OF LESS COMMANDS
+
+      Commands marked with * may be preceded by a number, N.
+      Notes in parentheses indicate the behavior if N is given.
+      A key preceded by a caret indicates the Ctrl key; thus ^K is ctrl-K.
+
+  h  H                 Display this help.
+  q  :q  Q  :Q  ZZ     Exit.
+ ---------------------------------------------------------------------------
+
+                           MOVING
+
+  e  ^E  j  ^N  CR  *  Forward  one line   (or N lines).
+  y  ^Y  k  ^K  ^P  *  Backward one line   (or N lines).
+  f  ^F  ^V  SPACE  *  Forward  one window (or N lines).
+  b  ^B  ESC-v      *  Backward one window (or N lines).
+  z                 *  Forward  one window (and set window to N).
+  w                 *  Backward one window (and set window to N).
+  ESC-SPACE         *  Forward  one window, but don't stop at end-of-file.
+  d  ^D             *  Forward  one half-window (and set half-window to N).
+  u  ^U             *  Backward one half-window (and set half-window to N).
+  ESC-)  RightArrow *  Right one half screen width (or N positions).
+HELP -- Press RETURN for more, or q when done...skipping...
+commit d851edda3009332dd5d3f8f949a102f279dad809 (HEAD -> master, origin/master, 
+origin/HEAD)
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 21:03:04 2015 -0700
+
+    updated README for badge notification
+
+commit 7c8c3ccc2f4bb118a657f1f7a7ab4e163d1b7a30
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:57:08 2015 -0700
+
+    added level1
+
+commit 228389a54073ed1e6ec98e3bfa59039b416efd4d
+Author: Henry Garcia <hgarc014@ucr.edu>
+
+commit 7c8c3ccc2f4bb118a657f1f7a7ab4e163d1b7a30
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:57:08 2015 -0700
+
+    added level1
+
+commit 228389a54073ed1e6ec98e3bfa59039b416efd4d
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:56:34 2015 -0700
+
+    added welcome screen
+
+commit db99f2d9df4b2288d29a97d2d04a1703b4f3c107
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:35 2015 -0700
+
+    updated README
+
+commit 640273807f9bac8af03575f82b788663d4b99927
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:07 2015 -0700
+
+    Hello World!
+
+commit 8cafb7c87b129686da362b14c3f3c750c1fe4bf5 (origin/vector, origin/map, origin/SteveJobs2014, origin/Kevin, origin/KenThompson2014, origin/Daniel, origin/BillGates2014)
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Sun Nov 30 18:29:35 2014 -0800
+
+    Initial commit
+...skipping...
+commit d851edda3009332dd5d3f8f949a102f279dad809 (HEAD -> master, origin/master, origin/HEAD)
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 21:03:04 2015 -0700
+
+    updated README for badge notification
+
+commit 7c8c3ccc2f4bb118a657f1f7a7ab4e163d1b7a30
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:57:08 2015 -0700
+
+    added level1
+
+commit 228389a54073ed1e6ec98e3bfa59039b416efd4d
+Author: Henry Garcia <hgarc014@ucr.edu>
+    added level1
+
+commit 228389a54073ed1e6ec98e3bfa59039b416efd4d
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:56:34 2015 -0700
+
+    added welcome screen
+
+commit db99f2d9df4b2288d29a97d2d04a1703b4f3c107
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:35 2015 -0700
+
+    updated README
+
+commit 640273807f9bac8af03575f82b788663d4b99927
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Wed Jun 10 20:55:07 2015 -0700
+
+    Hello World!
+
+commit 8cafb7c87b129686da362b14c3f3c750c1fe4bf5 (origin/vector, origin/map, origin/SteveJobs2014, origin/Kevin, origin/KenThompson2014, origin/Daniel, origin/BillGates2014)
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Sun Nov 30 18:29:35 2014 -0800
+
+    Initial commit
+MacBook-Pro-de-Nicolas:git-game Nico$ git checkout 640273807f9bac8af03575f82b788663d4b99927
+Note: checking out '640273807f9bac8af03575f82b788663d4b99927'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+HEAD is now at 6402738... Hello World!
+MacBook-Pro-de-Nicolas:git-game Nico$ cat README.md
+git-game
+========
+
+Hello World!
+
+It looks like you have some knowledge about traversing commits!
+Well, let's get this party started!
+
+``Level 2``
+
+We want to get to a branch whose name is the answer to this riddle: 
+I am a creature that is smaller than man, but many times more in number. 
+In code, my appearance can be subtle and no matter where I am found, I am unwanted. 
+
+What am I?
+
+MacBook-Pro-de-Nicolas:git-game Nico$ git checkout bug
+Previous HEAD position was 6402738... Hello World!
+Branch 'bug' set up to track remote branch 'bug' from 'origin'.
+Switched to a new branch 'bug'
+MacBook-Pro-de-Nicolas:git-game Nico$ cat README.md
+git-game
+========
+
+Congratulations, it looks like you found the "bug."
+When you work with other programmers on the same project, bugs are bound to appear.
+One way to create bugs is by changing code that you did not write without understanding what the code is doing.
+
+``Level 3``
+
+Sometimes we like to blame others for introducing bugs in our code. 
+Think you can find out who introduced a bug into our file cool.cpp? 
+We think he had something to do with the development of git.
+And from what we hear he also made a branch under his name.
+Checkout to that branch after you find out who the culprit is. 
+
+If you are still confused, this link might [help](http://git-scm.com/docs/git-blame)
+
+MacBook-Pro-de-Nicolas:git-game Nico$ ls
+LICENSE		README.md	cool.cpp	git-game	remember
+MacBook-Pro-de-Nicolas:git-game Nico$ git log
+commit 98491edbe9121d1a2b521c5ea658b191a0c54224 (HEAD -> bug, origin/bug)
+Author: Calvin Kwan <hkwan003@users.noreply.github.com>
+Date:   Wed Jun 10 15:36:41 2015 -0700
+
+    Update README.md
+    
+    changed link for better wording
+
+commit b0405546b61cf9f7750be00aab685f799066c725
+Author: Calvin Kwan <hkwan003@ucr.edu>
+Date:   Mon Jun 8 22:04:45 2015 -0700
+
+    added git blame resoure
+
+commit fb6fd3074a3277c277ecd9f31bbb2316fcbe48c8
+Author: Calvin Kwan <hkwan003@ucr.edu>
+Date:   Mon Jun 8 21:35:56 2015 -0700
+
+    level 3
+
+commit d4827d27af0af2fce8575230486efc3d89513d9d
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Fri Dec 19 10:01:21 2014 -0800
+
+    updated remember
+
+commit b2471d3681090a2187d1598f07cdce97dcd62205
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Fri Dec 19 09:33:43 2014 -0800
+
+    updated README
+
+commit 19e12509e302a3f00a9bb082c18cd90eb4a93887
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Fri Dec 12 18:44:52 2014 -0800
+
+    updated README
+
+commit 3922a6d86ec4b0ea00c7b7414e96ffd3b2f65f45
+Author: LinusTorvalds2014 <linustorvalds2014@gmail.com>
+commit 98491edbe9121d1a2b521c5ea658b191a0c54224 (HEAD -> bug, origin/bug)
+Author: Calvin Kwan <hkwan003@users.noreply.github.com>
+Date:   Wed Jun 10 15:36:41 2015 -0700
+
+    Update README.md
+    
+    changed link for better wording
+
+commit b0405546b61cf9f7750be00aab685f799066c725
+Author: Calvin Kwan <hkwan003@ucr.edu>
+Date:   Mon Jun 8 22:04:45 2015 -0700
+
+    added git blame resoure
+
+commit fb6fd3074a3277c277ecd9f31bbb2316fcbe48c8
+Author: Calvin Kwan <hkwan003@ucr.edu>
+Date:   Mon Jun 8 21:35:56 2015 -0700
+
+    level 3
+
+commit d4827d27af0af2fce8575230486efc3d89513d9d
+Author: Henry Garcia <hgarc014@ucr.edu>
+Date:   Fri Dec 19 10:01:21 2014 -0800
+
+[1]+  Stopped                 git log
+MacBook-Pro-de-Nicolas:git-game Nico$ git blame cool.cpp
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  1) #include <iostream>
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  2) 
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  3) using namespace std;
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  4) 
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  5) int main()
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  6) {
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  7)    string mesg = "Hello! Who are you?";
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  8)    string input;
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800  9)    cout << mesg << endl;
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800 10)    cin >> input;
+3922a6d8 (LinusTorvalds2014 2014-12-09 12:37:10 -0800 11)    cout << "Loops are fun!" << endl;
+3922a6d8 (LinusTorvalds2014 2014-12-09 12:37:10 -0800 12)    while(1);
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800 13)    string reply = "Well, " + input + ", we hope you are having fun with our git-game!";
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800 14)    cout << reply << endl; 
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800 15) }
+ce59bbfd (Henry Garcia      2014-12-08 18:22:35 -0800 16) 
+MacBook-Pro-de-Nicolas:git-game Nico$ git checkout LinusTorvalds2014
+Branch 'LinusTorvalds2014' set up to track remote branch 'LinusTorvalds2014' from 'origin'.
+Switched to a new branch 'LinusTorvalds2014'
+MacBook-Pro-de-Nicolas:git-game Nico$ cat README.md
+git-game
+========
+
+Looks like you found the branch of the evil Mastermind.
+Things may start to get a little more challenging...
+
+``Level 4``
+
+The next clue you are looking for --
+   is in a file you choose to ignore!
+
+MacBook-Pro-de-Nicolas:git-game Nico$ ls -a
+.		.DS_Store	.gitignore	README.md
+..		.git		LICENSE		git-game
+MacBook-Pro-de-Nicolas:git-game Nico$ cat .gitignore
+# welcome to the ignore file!!
+
+#``Level 5``
+
+# This file is hidden by default, 
+# but did you know you have some branches that aren't shown to you,
+# when you check the list of branches?
+
+
+#
+# For your next clue...
+# Which abstract data type tends to implement sets and maps?? 
+# The answer is the same answer to this riddle:
+#
+#   I am both mother and father.
+#   I am seldom still
+#   yet I never wander.
+#   I never birth nor nurse.
+#   
+#   What am I?
+#
+# Afterwards... well, you
+# know, checkout to the answer. 
+
+*.rem
+a.out
+MacBook-Pro-de-Nicolas:git-game Nico$ git checkout tree
+Branch 'tree' set up to track remote branch 'tree' from 'origin'.
+Switched to a new branch 'tree'
+MacBook-Pro-de-Nicolas:git-game Nico$ ls
+LICENSE			git-game		outputclue.sh
+README.md		nextclue_input.cpp
+MacBook-Pro-de-Nicolas:git-game Nico$ cat README.md
+git-game
+========
+``Level 6``
+
+Welcome to the "tree" branch. 
+Looks like good ol' Linus modified the "nextclue_input.cpp" file. 
+Normally, when ran with the shell script "outputclue.sh", the "nextclue_input.cpp" file would give us the next hint.
+
+Maybe, you should try running the shell script with the "nextclue_input.cpp" file and see what happens...
+
+You can run the script by running the command "./outputclue.sh FILE" .
+If you are on Windows, it's okey to use `git-bash` that is installed with [msysgit](https://msysgit.github.io/).
+
+MacBook-Pro-de-Nicolas:git-game Nico$ .outputclue.sh nextclue_input.cpp
+-bash: .outputclue.sh: command not found
+MacBook-Pro-de-Nicolas:git-game Nico$ ./outputclue.sh nextclue_input.cpp
+Level 7: 
+ Linus has been here...
+I love messing with these amateur programmers!!
+If you want some real fun, then you should try resolving a conflict between this branch (tree) and code4life.
+I introduced a little bug that you should fix in the conflict. >:)
+After you merge these 2 files you should run the shell script again!!
+
+Good Luck!!!
+
+ Hint: https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line/
+MacBook-Pro-de-Nicolas:git-game Nico$ ./outputclue.sh nextclue_input.cpp

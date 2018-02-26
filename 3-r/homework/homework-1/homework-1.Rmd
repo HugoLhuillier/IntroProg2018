@@ -1,0 +1,73 @@
+---
+title: "Homework #1"
+author: "Hugo Lhuillier"
+date: "26/02/2018"
+output: html_document
+---
+
+## Exercice 1: loading data
+
+For the exercices below, we will use the data contained in `inflammation-02.csv`, in the `data` folder that we used in class. What are the commands needed to move to the directory that contains `inflammation-02.csv`, and to load the data in a data frame.
+
+__For all the questions, please write your answer is the box below.__
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+
+## Exercice 2: insights on the data
+
+`inflammation-02.csv` is also a panel data. Each column corresponds to a particular day, while each row corresponds to a particular patient. Each data point is thus the inflammation per day per patient.
+
+Given this information, print all the data points of the last three patients. (hint: remember the `head` command? that's close)
+
+Additionally, print some __summary__ statistics on the first 7 days of treatment, for all the patients. 
+
+Remember: if the output of a function is not allocated to a variable, then it will be printed in the console.
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+
+## Exercice 3: cleaning data
+
+Suppose there was something wrong with the data collection on the first five days of treatment, for every second patient (#2, 4, 6, etc.), which resulted in the measurements being twice as large as they should be.
+
+To solve this problem:
+
+1. Write a vector containing which patient was affected? (you may want to type `help(seq)` in the command line)
+1. Create a new data frame in which you halve the first five days’ values in __only__ those patients (remember how to subset a data frame? that's no more complicated than that!)
+1. Print out the corrected data frame to check that your code has fixed the problem
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+
+## Exercice 4: computing statistics
+
+Based on a function that we have seen in class:
+
+1. compute the median for days 1 to 10 (across all patients)
+1. compute the max for every even days (across all patients)
+1. compute the mean for patients 1 to 5 (over the whole 40 days)
+
+Compute these statistics on the original data, not the one modified in exercice 3.
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+
+## Exercice 5: plotting
+
+Plot the minimum inflammation per day over the whole period.
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+
+For fun, you can also try the `boxplot` command. (once again, you may want to check `help(boxplot)` if the first place).
+
+```{r, echo = TRUE}
+"TYPE YOUR ANSWER HERE"
+```
+

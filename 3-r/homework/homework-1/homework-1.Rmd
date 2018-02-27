@@ -1,8 +1,9 @@
 ---
-title: "Homework #1"
-author: "Hugo Lhuillier"
-date: "26/02/2018"
-output: html_document
+title: 'Homework #1'
+author: "Julie Lenoir"
+date: "27/02/2018"
+output:
+  html_document: default
 ---
 
 ## Exercice 1: loading data
@@ -12,7 +13,9 @@ For the exercices below, we will use the data contained in `inflammation-02.csv`
 __For all the questions, please write your answer is the box below.__
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
+thepath = "~/data"
+filename="/inflammation-01.csv"
+data = data.frame(read.csv(paste0(thepath,filename),sep=",", header=F))
 ```
 
 ## Exercice 2: insights on the data
@@ -26,7 +29,17 @@ Additionally, print some __summary__ statistics on the first 7 days of treatment
 Remember: if the output of a function is not allocated to a variable, then it will be printed in the console.
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
+
+last_three_patients = data[1:3,]
+last_three_patients 
+
+#first_seven_days = summary(data[,1:7])
+#knitr::kable(first_seven_days, digits=2)
+
+library(sjmisc)
+lab = c("variable","min","max","mean","sd")
+descr(data[,1:7], max.length=1)[,lab]
+
 ```
 
 ## Exercice 3: cleaning data
@@ -36,11 +49,19 @@ Suppose there was something wrong with the data collection on the first five day
 To solve this problem:
 
 1. Write a vector containing which patient was affected? (you may want to type `help(seq)` in the command line)
-1. Create a new data frame in which you halve the first five days’ values in __only__ those patients (remember how to subset a data frame? that's no more complicated than that!)
+1. Create a new data frame in which you have the first five days’ values in __only__ those patients (remember how to subset a data frame? that's no more complicated than that!)
 1. Print out the corrected data frame to check that your code has fixed the problem
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
+p = as.numeric(dim(data)[1])
+
+#1. Write a vector containing affected patients
+patients = seq(from=2, to=p, by = 2)
+
+#2 + 3. Create a new dataframe and print it
+correc = subset.data.frame(data, attributes(data)$row.names %in% patients, select = c(V1, V2, V3, V4, V5))
+correc
+
 ```
 
 ## Exercice 4: computing statistics
@@ -54,7 +75,21 @@ Based on a function that we have seen in class:
 Compute these statistics on the original data, not the one modified in exercice 3.
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
+
+#1. Compute the median for days 1 to 10 (across all patients)
+
+apply(data[,1:10], 2, median)
+
+#2. Compute the max for every even days
+
+apply(data[,c(seq(1,40,2))],2, max)
+
+#3. Compute the mean for patients 1 to 5 (over the whole 40 days)
+
+#apply(data[1:5,], 1, mean)
+rowMeans(data[1:5,])
+
+
 ```
 
 ## Exercice 5: plotting
@@ -62,12 +97,26 @@ Compute these statistics on the original data, not the one modified in exercice 
 Plot the minimum inflammation per day over the whole period.
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
+plot(
+  apply(data,2, min), 
+  type = "s", 
+  main = "Evolution of the minimum inflammation observed", 
+  xlab = "Time(days)", 
+  ylab = "Minimal inflammation", 
+  col="brown", 
+  lwd = 2)
 ```
 
 For fun, you can also try the `boxplot` command. (once again, you may want to check `help(boxplot)` if the first place).
 
 ```{r, echo = TRUE}
-"TYPE YOUR ANSWER HERE"
-```
 
+boxplot(
+  data,
+  main = "BoxPlot representing inflammation over the period",
+  xlab = "Time (days)",
+  ylab = "Inflammation"
+)
+
+
+```

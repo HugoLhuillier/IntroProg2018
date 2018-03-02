@@ -1,0 +1,2 @@
+the solution I found on the git game lvl 1 is "hello world" I got that 
+using the command git log on the git game folder

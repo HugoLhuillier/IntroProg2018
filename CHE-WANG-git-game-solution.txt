@@ -1,0 +1,31 @@
+Level 1:
+git log
+git checkout 640273807f9bac8af03575f82b788663d4b99927
+Hello World!
+
+Level 2:
+git checkout bug
+
+Level 3:
+git checkout LinusTorvalds2014
+
+Level 4:
+cat .gitignore
+
+Level 5:
+git checkout tree
+
+Level 6:
+./outputclue.sh nextclue_input.cpp
+
+Level 7:
+git merge code4life
+nano nextclue_input.cpp
+git add nextclue_input.cpp
+git commit "resolve conflict with code4life branch"
+./outputclue.sh nextclue_input.cpp
+
+Level 9
+git checkout Henry
+
+

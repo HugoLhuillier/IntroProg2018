@@ -1,0 +1,109 @@
+### -------
+### SETTING THE GAME
+### -------
+
+#Cloning the repository
+git clone https://github.com/hgarc014/git-game.git
+
+#Display all the directories
+ls
+
+#Changing the current working directory
+cd git-game
+
+#display readme
+cat readme.md
+ 
+### -------
+### BEGINNING THE GAME
+### -------
+
+##Level 1
+
+#display commits
+$ git log
+
+
+# update HEAD to set the specified branch as the current branch.
+$ git checkout 640273807f9bac8af03575f82b788663d4b99927
+ 
+#display readme
+$ cat readme.md
+
+##LEVEL 2
+
+# update HEAD to set the specified branch as the current branch
+$ git checkout bug
+
+#display readme
+$ cat readme.md
+
+##LEVEL 3
+
+#Display files
+$ ls
+
+#Display the coders
+$ git log --graph
+
+# Display changes
+$ git blame cool.cpp
+
+# update HEAD to set the specified branch as the current branch.
+$ git checkout LinusTorvalds2014
+
+#display readme
+$ cat readme.md
+
+##LEVEL 4
+
+#Display ALL the files (also those hidden)
+$ ls –a
+
+#Go to the « ignored » file
+$ cat .gitignore
+
+##LEVEL 5
+# update HEAD to set the specified branch as the current branch.
+$ git checkout tree
+
+#Display the files
+$ ls
+
+#display readme
+$ cat readme.md
+
+##LEVEL 6
+#Run the script
+$ ./outputclue.sh nextclue_input.cpp
+
+##LEVEL 7
+
+# Add file contents to the index
+$ git add .
+
+#Added a new feature some files changed
+$ git commit -m "Updating Stuff."
+
+# update HEAD to set the specified branch as the current branch
+$ git checkout mouse
+
+# display the files
+$ ls
+
+#display readme
+$ cat readme.md
+
+##LEVEL 8
+#Compare the "diff"erences between this file and the previous branch
+$ git diff mouse bug -- remember
+
+
+#Change the name of the tag
+$ git tag Thierry_Henry && git tag -d Henry
+
+# update HEAD to set the specified branch as the current branch.
+$ git checkout Henry
+
+
+

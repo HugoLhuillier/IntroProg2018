@@ -43,10 +43,12 @@ data$Gender <- droplevels(data$Gender)
   
   4. [**easy**] print summary statistics on the current data set 
   
+I let out the first column which corresponds to patients ID. 
+
+Since gender and group are resp. character and factor, the summary function is only going to give us the number of individual per category/level, and not the mean/ min/ max/ quantiles.
+
 ```{r, echo = TRUE}
 
-#I let out the first column which corresponds to patients ID. 
-#Since gender and group are resp. character and factor, the summary function is only going to give us the number of individual per category/level, and not the mean/ min/ max/ quantiles.
 knitr::kable(summary(data[,2:9]))
 
 ```
@@ -73,11 +75,13 @@ hist(data$Aneurism_mean,
 
 plot( by(data$Aneurism_mean, data$Gender, hist, plot = FALSE)$f, 
      main = "Distribution of aneurisms across women",
-     xlab = "Mean level of aneurism over the 4 quarters")
+     xlab = "Mean level of aneurism over the 4 quarters",
+     border = "dark red")
 
 plot( by(data$Aneurism_mean, data$Gender, hist, plot = FALSE)$m, 
      main = "Distribution of aneurisms across men",
-     xlab = "Mean level of aneurism over the 4 quarters")
+     xlab = "Mean level of aneurism over the 4 quarters",
+     border = "orange")
 
 ```
 
@@ -143,7 +147,7 @@ _Note_: if the original vector does not lie in the $(0,1)$ interval, warn the us
 scale = function(x, a, b){
   #scales a vector with a range (0, 1) to a vector with the range (a,b)
   #the input should be a vector
-  if(min(x) != 0 && max(x) != 1){
+  if(min(x) < 0 && max(x) > 1){
     warning("This function applies only to vectors with a range (0,1).")
   }
   else{
@@ -163,15 +167,18 @@ Write a function that scales an arbitrary vector `x` to a range `a` and `b`, whe
 ```{r, echo = TRUE}
 
 general_scale = function(x, a = 0, b = 1){
-  #scales an arbitraru vector x to a range (a, b)
+  #scales an arbitrary vector x to a range (a, b)
   #by default, a=0 and b=1 such that general_scale = scale_unit
   step1 = scale_unit(x)
   step2 = scale(step1, a, b)
   return(step2)
 }
 
-general_scale(test) == scale_unit(test)
-general_scale(test, 5, 10)
+Test = c(1, 2, 3, 4, 5)
+#Let's test for our "by default" statement
+
+general_scale(Test) == scale_unit(Test)
+general_scale(Test, 5, 10)
 
 ```
 
@@ -180,7 +187,26 @@ general_scale(test, 5, 10)
 Using randown draws from a $(0,1)$ uniform distrbution, produce a plot that shows why using directly `scale` on a non-unit vector produces the wrong result. **Be creative**.
 
 ```{r, echo = TRUE} 
-# ANSWER HERE
+
+t = runif(25)
+h = scale(t, 1, 2)
+j = scale(h, 2, 3)
+k = general_scale(h, 2, 3)
+
+
+plot(1:25, t, xlim =c(0,25.5), ylim = c(0,7))
+points(1:25, h, col=2, pch=3)
+points(1:25, j, col=4, pch=5)
+points(1:25, k, col=6, pch=7)
+lines(0:25, rep(1, 26), col="gray")
+lines(0:25, rep(2, 26), col="gray")
+lines(0:25, rep(3, 26), col="gray")
+legend(4.2, 7, 
+       c("runif", "scaled to (1,2)", "unproper scaled to (2,3)", "proper scale to (2, 3)"),
+       col = c(1, 2, 4, 6), 
+       pch = c(1, 3, 5, 7))
 ```
 
+Indeed in the graph, the first scaling is working: we get points that belong to the range (1, 2). However, when we try to rescale those points to the range (2, 3), we end up with points in the range (3, 4). The function scale is therefore not giving the proper result when applied to vector out of the range (0, 1).
 
+However, when we use the function "general_scale", we get the proper result. 

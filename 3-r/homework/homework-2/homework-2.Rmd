@@ -1,0 +1,70 @@
+---
+title: "Homework #2"
+author: "Hugo Lhuillier"
+date: "08/03/2018"
+output: html_document
+---
+
+_Remember_: the cleaner and the more documented your code is, the more points you get.
+
+## Exercice 1: playing with data 
+
+The `sample.csv` file (in the `data` folder) contains the data of an experiment conducted on 100 patients. Patients belonged to one of the following groups: control, treatment 1 and treatment 2. For each patient, their level of aneurisms was recorded four times throughout the year.
+
+With this data:
+
+  1. [**easy**] load the `sample.csv` file (careful, it may contain columns name)
+  1. [**easy**] currently, the `ID` variable is stored as factors. Convert this variable from factors to characters
+  1. [**trivial**] as in the class, clean the `Gender` variable to get rid of `M` and `F`
+  1. [**easy**] print summary statistics on the current data set 
+  1. [**medium**] create a new variable, `Aneurisms_mean`, which corresponds to the mean aneurism across the four quarters, for each patient
+  1. [**harder**] plot the distribution of `Aneurisms_mean` for both genders, and then for male and female separately
+
+
+```{r, echo = TRUE}
+# ANSWER HERE
+```
+
+## Exercice 2: scaling to $(0,1)$
+
+Write a function `rescale` that takes a vector as input and returns a corresponding vector of values scaled to lie in the range 0 to 1. 
+
+```{r, echo = TRUE}
+# ANSWER HERE
+```
+
+## Exercice 3: testing
+
+Design at least 3 tests -- using the `testthat` package -- that check whether your `scale_unit` function is working properly.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+```
+
+# Exercice 4: scaling to $(a,b)$
+
+Write a function `scale` that takes a vector with a range $(0,1)$ as input and returns a vector of values scaled to lie in the range `a` to `b`.
+
+_Note_: if the original vector does not lie in the $(0,1)$ interval, warn the user that the computation is erroned.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+```
+
+# Exercice 5: composition
+
+Write a function that scales an arbitrary vector `x` to a range `a` and `b`, where `a` and `b` are arguments of the function with default value `0` and `1`.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+```
+
+# Exercice 6: visual checking
+
+Using randown draws from a $(0,1)$ uniform distrbution, produce a plot that shows why using directly `scale` on a non-unit vector produces the wrong result. **Be creative**.
+
+```{r, echo = TRUE} 
+# ANSWER HERE
+```
+
+

@@ -1,0 +1,212 @@
+---
+title: "Homework #2"
+author: "Julie Lenoir"
+date: "13/03/2018"
+output: html_document
+---
+
+## Exercice 1: playing with data 
+
+The `sample.csv` file (in the `data` folder) contains the data of an experiment conducted on 100 patients. Patients belonged to one of the following groups: control, treatment 1 and treatment 2. For each patient, their level of aneurisms was recorded four times throughout the year.
+
+With this data:
+
+  1. [**easy**] load the `sample.csv` file (careful, it may contain columns name)
+
+```{r, echo = TRUE}
+
+path = "~/data/"
+filename = "sample.csv"
+data = read.csv(paste0(path, filename), header = TRUE)
+
+```  
+
+  2. [**easy**] currently, the `ID` variable is stored as factors. Convert this variable from factors to characters
+  
+```{r, echo = TRUE}
+
+class(data$ID)
+data$ID <- as.character(data$ID)
+class(data$ID)
+
+```
+  
+  3. [**trivial**] as in the class, clean the `Gender` variable to get rid of `M` and `F`
+  
+```{r, echo = TRUE}
+
+data$Gender[data$Gender == "M"] <- "m"
+data$Gender[data$Gender == "F"] <- "f"
+data$Gender <- droplevels(data$Gender)
+
+```
+  
+  4. [**easy**] print summary statistics on the current data set 
+  
+I let out the first column which corresponds to patients ID. 
+
+Since gender and group are resp. character and factor, the summary function is only going to give us the number of individual per category/level, and not the mean/ min/ max/ quantiles.
+
+```{r, echo = TRUE}
+
+knitr::kable(summary(data[,2:9]))
+
+```
+  
+  5. [**medium**] create a new variable, `Aneurisms_mean`, which corresponds to the mean aneurism across the four quarters, for each patient
+  
+```{r, echo = TRUE}
+
+data$Aneurism_mean = apply(data[,6:9], 1, mean)
+head(data[,6:10])
+
+```
+  
+  6. [**harder**] plot the distribution of `Aneurisms_mean` for both genders, and then for male and female separately
+
+
+```{r, echo = TRUE}
+
+# Over all distribution
+hist(data$Aneurism_mean, 
+     main = "Distribution of aneurisms across all patients", 
+     xlab = "Mean level of aneurism over the 4 quarters", 
+     border = "purple")
+
+plot( by(data$Aneurism_mean, data$Gender, hist, plot = FALSE)$f, 
+     main = "Distribution of aneurisms across women",
+     xlab = "Mean level of aneurism over the 4 quarters",
+     border = "dark red")
+
+plot( by(data$Aneurism_mean, data$Gender, hist, plot = FALSE)$m, 
+     main = "Distribution of aneurisms across men",
+     xlab = "Mean level of aneurism over the 4 quarters",
+     border = "orange")
+
+```
+
+## Exercice 2: scaling to $(0,1)$
+
+Write a function `rescale` that takes a vector as input and returns a corresponding vector of values scaled to lie in the range 0 to 1. 
+
+```{r, echo = TRUE}
+
+scale_unit = function(d){
+  #scales a vector with a range (a, b) to a vector with the range (0,1)
+  #scales the columns of a matrix to the range (0,1)
+  if(class(d) == "numeric"){
+  a = (d - min(d))/(max(d) - min(d))
+  return(a)
+  }
+  else if(class(d) == "data.frame" | class(d) == "matrix"){
+  warning("Input is either a data.frame or a matrix, rescaling is done by columns.")
+  a = apply(d, 2, function(x) (x - min(x))/(max(x) - min(x)))
+  return(a)
+  }
+  else{
+  warning("Input is neither a vector, a matrix or a dataframe, the function cannot be applied.")  
+  }
+}
+
+scale_unit(c(-2, 0, 6, 9))
+scale_unit(matrix(c(1, 10, 30,
+                 3, 15, 35,
+                 5, 21, 38), nrow = 3, ncol = 3))
+
+
+```
+
+## Exercice 3: testing
+
+Design at least 3 tests -- using the `testthat` package -- that check whether your `scale_unit` function is working properly.
+
+```{r, echo = TRUE}
+
+test = scale_unit(c(1, 2, 3, 4, 5))
+
+require(testthat)
+test_that("Testing scale_unit function", {
+  all.equal(c(0.00, 0.25, 0.50, 0.75, 1.00), test, info = "Test for basic vector")
+  expect_true(min(test) == 0 , "Test min = 0")
+  expect_true(max(test) == 1 , "Test max = 1")
+  expect_true(mean(test) == 
+                ( mean(test) - min(test) ) / 
+                ( max(test) - min(test) ), "Test mean was properly scaled" )
+})
+
+```
+
+# Exercice 4: scaling to $(a,b)$
+
+Write a function `scale` that takes a vector with a range $(0,1)$ as input and returns a vector of values scaled to lie in the range `a` to `b`.
+
+_Note_: if the original vector does not lie in the $(0,1)$ interval, warn the user that the computation is erroned.
+
+```{r, echo = TRUE}
+
+scale = function(x, a, b){
+  #scales a vector with a range (0, 1) to a vector with the range (a,b)
+  #the input should be a vector
+  if(min(x) < 0 && max(x) > 1){
+    warning("This function applies only to vectors with a range (0,1).")
+  }
+  else{
+    scaled = x*(b-a) + a
+    return(scaled)
+  }
+}
+
+scale(c(0, 0.25, 0.5, 0.75, 1), 1, 5)
+
+```
+
+# Exercice 5: composition
+
+Write a function that scales an arbitrary vector `x` to a range `a` and `b`, where `a` and `b` are arguments of the function with default value `0` and `1`.
+
+```{r, echo = TRUE}
+
+general_scale = function(x, a = 0, b = 1){
+  #scales an arbitrary vector x to a range (a, b)
+  #by default, a=0 and b=1 such that general_scale = scale_unit
+  step1 = scale_unit(x)
+  step2 = scale(step1, a, b)
+  return(step2)
+}
+
+Test = c(1, 2, 3, 4, 5)
+#Let's test for our "by default" statement
+
+general_scale(Test) == scale_unit(Test)
+general_scale(Test, 5, 10)
+
+```
+
+# Exercice 6: visual checking
+
+Using randown draws from a $(0,1)$ uniform distrbution, produce a plot that shows why using directly `scale` on a non-unit vector produces the wrong result. **Be creative**.
+
+```{r, echo = TRUE} 
+
+t = runif(25)
+h = scale(t, 1, 2)
+j = scale(h, 2, 3)
+k = general_scale(h, 2, 3)
+
+
+plot(1:25, t, xlim =c(0,25.5), ylim = c(0,7))
+points(1:25, h, col=2, pch=3)
+points(1:25, j, col=4, pch=5)
+points(1:25, k, col=6, pch=7)
+lines(0:25, rep(1, 26), col="gray")
+lines(0:25, rep(2, 26), col="gray")
+lines(0:25, rep(3, 26), col="gray")
+legend(4.2, 7, 
+       c("runif", "scaled to (1,2)", "unproper scaled to (2,3)", "proper scale to (2, 3)"),
+       col = c(1, 2, 4, 6), 
+       pch = c(1, 3, 5, 7))
+```
+
+Indeed in the graph, the first scaling is working: we get points that belong to the range (1, 2). However, when we try to rescale those points to the range (2, 3), we end up with points in the range (3, 4). The function scale is therefore not giving the proper result when applied to vector out of the range (0, 1).
+
+However, when we use the function "general_scale", we get the proper result. 

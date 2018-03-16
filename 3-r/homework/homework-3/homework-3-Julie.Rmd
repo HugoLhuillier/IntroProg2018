@@ -1,0 +1,103 @@
+---
+title: "Homework #3"
+author: "Julie Lenoir"
+date: "16/03/2018"
+output: html_document
+---
+
+## Exercice 1: factorial
+
+Recall that the factorial of $n$, written $n!$, is defined as $n! = n \times (n - 1) \times \dots \times 2 \times 1$.
+
+The `R` function `factorial(n)` compute the factorial of `n`. Using a `for` loop, write your own version of this function. 
+
+_Hint_: similar to the `sum` function we wrote in class.
+
+```{r, echo = TRUE}
+factorial = function(n){
+  a = 1
+  for(t in 2:n){
+    #we set the loop so that at each step, we multiply a by     a + 1
+    a <- a * t
+  }
+return(a)
+}
+```
+
+## Exercice 2: binomial distribution 
+
+The binomial random variable `Y \sim Bin(n,p)` repesents the number of successes in `n` binary trials, where the probability of success of each trial is the probability `p`.
+
+Using only the `runif()` command - draw a number from the $(0,1)$ uniform distribution, write a function such `own_binomial` such that `own_binomial(n,p)` generates one draw of `Y`.
+
+_Hint 1_: if $U \sim (0,1)$, and $p \in (0,1)$, then the expression `U < p` evalutes to `true` with probability `p`.
+
+_Hint 2_: you will need to use both a `for` loop and a `if` statement.
+
+```{r, echo = TRUE}
+
+own_binomial = function(n, p){
+  if(p<0 | p>1){
+    warning("p is representating the probability of success, it needs to lie in [0, 1]")
+  }
+else if(0<=p && p<=1){
+  results = c(rep(NA, n))
+    for(t in 1:n){
+      results[t] <- as.integer(runif(1)<p)
+    }
+  return(results)
+  }
+}
+
+
+
+```
+
+## Exercice 3: binomial distribution (test)
+
+The `R` function `rbinom(n,size,p)` generates `n` draws from a binomial distribution $Bin(size,p)$ _[i know, i was confused myself]_. 
+
+Using this function, and your function defined in exerice 2, test if your function is asymptotically correct.
+
+_Hint_: you can look [here](https://www.r-bloggers.com/overlapping-histogram-in-r/) for some tricks on how to generate overlapping histrograms.
+
+```{r, echo = TRUE}
+
+#Step 1: make an algorithm to fill the data frame : 
+#     - col1 = true/false corr to each func 
+#     - col2 = frequencies : find them using "table"
+#     - col3 = value of p for that draw
+#     - use the ggplot as done above (don't forget the "identity" required because geom_bar applies a stat_count to variable y, and here variable y already indicates frequencies)
+
+X = own_binomial(1000,0.2)
+unname(table(X))
+
+tp05 = data.frame(value=c("true_o", "false_o", "true_r", 
+                         "false_r"), 
+                  freq = c(48, 52, 50, 50), 
+                  proba = c(rep(0.5, 4)))
+
+tp03 = data.frame(value=c("true_o", "false_o", "true_r", 
+                         "false_r"), 
+                  freq = c(28, 72, 30, 70),
+                  proba = c(rep(0.3, 4)))
+
+T = rbind(tp03, tp05)
+
+ggplot(data = T, aes(x=value, y=as.numeric(freq))) + 
+         facet_wrap(~proba) +
+         geom_bar(aes(fill = value), stat="identity")
+
+```
+
+## Exercice 4: random device 
+
+Write a program that compute one realization of the following random device:
+
+1. flip an unbiased coin 30 times (_hint_: once again, using `runif`)
+1. whenever 3 consecutive heads occur, add one dollar to your wealth (once again, very similar to how we computed the sum in class)
+1. whenever 3 consecutive tails occur, remove one dollar from your wealth
+
+```{r, echo = TRUE} 
+# ANSWER HERE
+```

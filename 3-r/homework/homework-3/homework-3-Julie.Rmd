@@ -1,7 +1,7 @@
 ---
 title: "Homework #3"
 author: "Julie Lenoir"
-date: "16/03/2018"
+date: "17/03/2018"
 output: html_document
 ---
 
@@ -10,8 +10,6 @@ output: html_document
 Recall that the factorial of $n$, written $n!$, is defined as $n! = n \times (n - 1) \times \dots \times 2 \times 1$.
 
 The `R` function `factorial(n)` compute the factorial of `n`. Using a `for` loop, write your own version of this function. 
-
-_Hint_: similar to the `sum` function we wrote in class.
 
 ```{r, echo = TRUE}
 factorial = function(n){
@@ -22,6 +20,7 @@ factorial = function(n){
   }
 return(a)
 }
+factorial(3)
 ```
 
 ## Exercice 2: binomial distribution 
@@ -30,10 +29,6 @@ The binomial random variable `Y \sim Bin(n,p)` repesents the number of successes
 
 Using only the `runif()` command - draw a number from the $(0,1)$ uniform distribution, write a function such `own_binomial` such that `own_binomial(n,p)` generates one draw of `Y`.
 
-_Hint 1_: if $U \sim (0,1)$, and $p \in (0,1)$, then the expression `U < p` evalutes to `true` with probability `p`.
-
-_Hint 2_: you will need to use both a `for` loop and a `if` statement.
-
 ```{r, echo = TRUE}
 
 own_binomial = function(n, p){
@@ -41,8 +36,10 @@ own_binomial = function(n, p){
     warning("p is representating the probability of success, it needs to lie in [0, 1]")
   }
 else if(0<=p && p<=1){
+  #define a empty vector of results
   results = c(rep(NA, n))
     for(t in 1:n){
+      #add 1 as an element of our results vector with probability p
       results[t] <- as.integer(runif(1)<p)
     }
   return(results)
@@ -50,7 +47,7 @@ else if(0<=p && p<=1){
 }
 
 
-
+own_binomial(10, 0.5)
 ```
 
 ## Exercice 3: binomial distribution (test)
@@ -59,34 +56,31 @@ The `R` function `rbinom(n,size,p)` generates `n` draws from a binomial distribu
 
 Using this function, and your function defined in exerice 2, test if your function is asymptotically correct.
 
-_Hint_: you can look [here](https://www.r-bloggers.com/overlapping-histogram-in-r/) for some tricks on how to generate overlapping histrograms.
-
 ```{r, echo = TRUE}
 
-#Step 1: make an algorithm to fill the data frame : 
-#     - col1 = true/false corr to each func 
-#     - col2 = frequencies : find them using "table"
-#     - col3 = value of p for that draw
-#     - use the ggplot as done above (don't forget the "identity" required because geom_bar applies a stat_count to variable y, and here variable y already indicates frequencies)
+library(ggplot2)
 
-X = own_binomial(1000,0.2)
-unname(table(X))
+#Let's constitute our database to compare the results of the two functions: own_binomial and rbinom
 
-tp05 = data.frame(value=c("true_o", "false_o", "true_r", 
-                         "false_r"), 
-                  freq = c(48, 52, 50, 50), 
-                  proba = c(rep(0.5, 4)))
+freq = c()
+prob = c()
+for(p in c(0.1, 0.3, 0.5, 0.7, 0.9)){
+  own = unname(table(own_binomial(1000,p)) )
+  R = unname(table(rbinom(1000,1, p)) )
+  freq = rbind(freq, t(t(own)), t(t(R))  )
+  prob = rbind(prob, matrix(rep(p), 4, 1) )       
+}
+type = matrix(rep(c("f", "t", "F", "T")), 20, 1)
+data = data.frame(type = type, freq=freq, proba=prob)
 
-tp03 = data.frame(value=c("true_o", "false_o", "true_r", 
-                         "false_r"), 
-                  freq = c(28, 72, 30, 70),
-                  proba = c(rep(0.3, 4)))
+legend = c("Failures from\nown_function", "Failures\nfrom R", "Successes from\nown_function", "Successes\nfrom R")
 
-T = rbind(tp03, tp05)
-
-ggplot(data = T, aes(x=value, y=as.numeric(freq))) + 
+ggplot( data, aes(x=type, y=freq) ) + 
          facet_wrap(~proba) +
-         geom_bar(aes(fill = value), stat="identity")
+         geom_bar(aes(fill = type), 
+                  stat="identity", 
+                  position = "dodge") +
+         labs(title="Comparing our own binomial function and the R one", y="Number of Success and Failures", x="") + scale_fill_discrete(name = "Legend", labels = legend) + theme(legend.position="bottom")
 
 ```
 
@@ -99,5 +93,47 @@ Write a program that compute one realization of the following random device:
 1. whenever 3 consecutive tails occur, remove one dollar from your wealth
 
 ```{r, echo = TRUE} 
-# ANSWER HERE
+
+gain = function(n){
+
+#we set the zero variables and empty vectors we want to build on
+results = c()
+wealth = 0
+t = 1
+i = 2
+
+#we loop over to get results :
+
+for(t in 1:30){
+  if(runif(1)<0.5){
+    results = cbind(results, "Tail")
+  }
+  else{results = cbind(results, "Heads")}
+  t <-  t+1
+}
+
+#we now compute final wealth
+#if R finds 3 "Heads"/"Tail" in a row, he will next seek for a triple at i = i+3 (otherwise if we get 4 heads/tails, we would gain/loose 2 instead of 1)
+#if R doesn't find 3 "Heads"/"Tail" in a row, he will next seek for a triple at the next element of Results
+
+while(i <= 29){
+  if(all(results[(i-1):(i+1)] == c(rep("Heads",3)))){
+    wealth <- wealth + 1
+    i = i+3
+
+  }
+  else if(all(results[(i-1):(i+1)] == c(rep("Tail", 3)))){
+    wealth <- wealth - 1
+    i = i+3
+  }
+  else{i <- i+1}
+}
+wealth = floor(wealth)
+print(as.vector(results))
+return(wealth)
+}
+gain(30)
+
+
+
 ```

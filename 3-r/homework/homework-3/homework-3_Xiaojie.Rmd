@@ -1,0 +1,114 @@
+---
+title: "Homework #3"
+author: "Hugo Lhuillier"
+date: "08/03/2018"
+output: html_document
+---
+
+_Remember_: the cleaner and the more documented your code is, the more points you get.
+
+## Exercice 1: factorial
+
+Recall that the factorial of $n$, written $n!$, is defined as $n! = n \times (n - 1) \times \dots \times 2 \times 1$.
+
+The `R` function `factorial(n)` compute the factorial of `n`. Using a `for` loop, write your own version of this function. 
+
+_Hint_: similar to the `sum` function we wrote in class.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+factorialn=function(x){
+  s=1
+  for (v in 1:x) {
+    s=s*v
+  }
+  return(s)
+}
+factorialn(5)
+test_that("test facorialn has the right result",{
+  expect_true(factorial(5)==factorialn(5), "my factorial is true")
+})
+```
+
+## Exercice 2: binomial distribution 
+
+The binomial random variable `Y \sim Bin(n,p)` repesents the number of successes in `n` binary trials, where the probability of success of each trial is the probability `p`.
+
+Using only the `runif()` command - draw a number from the $(0,1)$ uniform distribution, write a function such `own_binomial` such that `own_binomial(n,p)` generates one draw of `Y`.
+
+_Hint 1_: if $U \sim (0,1)$, and $p \in (0,1)$, then the expression `U < p` evalutes to `true` with probability `p`.
+
+_Hint 2_: you will need to use both a `for` loop and a `if` statement.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+own_binomial=function(n,p){
+  if(p<=0|p>=1){
+    print("p must be in (0,1)")
+  }
+  else{
+    d=numeric(length = length(1:n))
+    for (v in 1:n) {
+      d[v]=(runif(1)<p)
+    }
+    return(d)
+  }
+}
+own_binomial(5,0.9)
+```
+
+## Exercice 3: binomial distribution (test)
+
+The `R` function `rbinom(n,size,p)` generates `n` draws from a binomial distribution $Bin(size,p)$ _[i know, i was confused myself]_. 
+
+Using this function, and your function defined in exerice 2, test if your function is asymptotically correct.
+
+_Hint_: you can look [here](https://www.r-bloggers.com/overlapping-histogram-in-r/) for some tricks on how to generate overlapping histrograms.
+
+```{r, echo = TRUE}
+# ANSWER HERE
+own_rbinom=function(n,size,p){
+  d=numeric(length = length(1:n))
+  for (v in 1:n) {
+    d[v]=sum(own_binomial(size,p))
+  }
+  return(d)
+}
+hist(rbinom(1000,10,0.5),col = rgb(1,0,0,0.5),main="overlapping histogram")
+hist(own_rbinom(1000,10,0.5),col=rgb(0,0,1,0.5),add=TRUE)
+#overlapping part is purple
+```
+
+## Exercice 4: random device 
+
+Write a program that compute one realization of the following random device:
+
+1. flip an unbiased coin 30 times (_hint_: once again, using `runif`)
+1. whenever 3 consecutive heads occur, add one dollar to your wealth (once again, very similar to how we computed the sum in class)
+1. whenever 3 consecutive tails occur, remove one dollar from your wealth
+
+```{r, echo = TRUE} 
+# ANSWER HERE
+#head means u>0.5;tail means u<0.5
+dollardevice=function(){
+  s=0
+  for (v in 1:10) {
+    if(all(runif(3)>0.5)){
+      s=s+1
+    }
+    else if(all(runif(3)<0.5)){
+      s=s-1
+    }
+  }
+  return(s)
+}
+draw_dollardevice=function(n){
+  d=numeric(length = length(1:n))
+  for (v in 1:n) {
+    d[v]=dollardevice()
+  }
+  return(d)
+}
+hist(draw_dollardevice(10000))
+
+```

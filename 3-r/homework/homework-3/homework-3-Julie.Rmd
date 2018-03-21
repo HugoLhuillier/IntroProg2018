@@ -1,0 +1,139 @@
+---
+title: "Homework #3"
+author: "Julie Lenoir"
+date: "17/03/2018"
+output: html_document
+---
+
+## Exercice 1: factorial
+
+Recall that the factorial of $n$, written $n!$, is defined as $n! = n \times (n - 1) \times \dots \times 2 \times 1$.
+
+The `R` function `factorial(n)` compute the factorial of `n`. Using a `for` loop, write your own version of this function. 
+
+```{r, echo = TRUE}
+factorial = function(n){
+  a = 1
+  for(t in 2:n){
+    #we set the loop so that at each step, we multiply a by     a + 1
+    a <- a * t
+  }
+return(a)
+}
+factorial(3)
+```
+
+## Exercice 2: binomial distribution 
+
+The binomial random variable `Y \sim Bin(n,p)` repesents the number of successes in `n` binary trials, where the probability of success of each trial is the probability `p`.
+
+Using only the `runif()` command - draw a number from the $(0,1)$ uniform distribution, write a function such `own_binomial` such that `own_binomial(n,p)` generates one draw of `Y`.
+
+```{r, echo = TRUE}
+
+own_binomial = function(n, p){
+  if(p<0 | p>1){
+    warning("p is representating the probability of success, it needs to lie in [0, 1]")
+  }
+else if(0<=p && p<=1){
+  #define a empty vector of results
+  results = c(rep(NA, n))
+    for(t in 1:n){
+      #add 1 as an element of our results vector with probability p
+      results[t] <- as.integer(runif(1)<p)
+    }
+  return(results)
+  }
+}
+
+
+own_binomial(10, 0.5)
+```
+
+## Exercice 3: binomial distribution (test)
+
+The `R` function `rbinom(n,size,p)` generates `n` draws from a binomial distribution $Bin(size,p)$ _[i know, i was confused myself]_. 
+
+Using this function, and your function defined in exerice 2, test if your function is asymptotically correct.
+
+```{r, echo = TRUE}
+
+library(ggplot2)
+
+#Let's constitute our database to compare the results of the two functions: own_binomial and rbinom
+
+freq = c()
+prob = c()
+for(p in c(0.1, 0.3, 0.5, 0.7, 0.9)){
+  own = unname(table(own_binomial(1000,p)) )
+  R = unname(table(rbinom(1000,1, p)) )
+  freq = rbind(freq, t(t(own)), t(t(R))  )
+  prob = rbind(prob, matrix(rep(p), 4, 1) )       
+}
+type = matrix(rep(c("f", "t", "F", "T")), 20, 1)
+data = data.frame(type = type, freq=freq, proba=prob)
+
+legend = c("Failures from\nown_function", "Failures\nfrom R", "Successes from\nown_function", "Successes\nfrom R")
+
+ggplot( data, aes(x=type, y=freq) ) + 
+         facet_wrap(~proba) +
+         geom_bar(aes(fill = type), 
+                  stat="identity", 
+                  position = "dodge") +
+         labs(title="Comparing our own binomial function and the R one", y="Number of Success and Failures", x="") + scale_fill_discrete(name = "Legend", labels = legend) + theme(legend.position="bottom")
+
+```
+
+## Exercice 4: random device 
+
+Write a program that compute one realization of the following random device:
+
+1. flip an unbiased coin 30 times (_hint_: once again, using `runif`)
+1. whenever 3 consecutive heads occur, add one dollar to your wealth (once again, very similar to how we computed the sum in class)
+1. whenever 3 consecutive tails occur, remove one dollar from your wealth
+
+```{r, echo = TRUE} 
+
+gain = function(n){
+
+#we set the zero variables and empty vectors we want to build on
+results = c()
+wealth = 0
+t = 1
+i = 2
+
+#we loop over to get results :
+
+for(t in 1:30){
+  if(runif(1)<0.5){
+    results = cbind(results, "Tail")
+  }
+  else{results = cbind(results, "Heads")}
+  t <-  t+1
+}
+
+#we now compute final wealth
+#if R finds 3 "Heads"/"Tail" in a row, he will next seek for a triple at i = i+3 (otherwise if we get 4 heads/tails, we would gain/loose 2 instead of 1)
+#if R doesn't find 3 "Heads"/"Tail" in a row, he will next seek for a triple at the next element of Results
+
+while(i <= 29){
+  if(all(results[(i-1):(i+1)] == c(rep("Heads",3)))){
+    wealth <- wealth + 1
+    i = i+3
+
+  }
+  else if(all(results[(i-1):(i+1)] == c(rep("Tail", 3)))){
+    wealth <- wealth - 1
+    i = i+3
+  }
+  else{i <- i+1}
+}
+wealth = floor(wealth)
+print(as.vector(results))
+return(wealth)
+}
+gain(30)
+
+
+
+```

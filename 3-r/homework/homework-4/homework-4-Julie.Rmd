@@ -1,0 +1,97 @@
+---
+title: "Homework #4"
+author: "Julie Lenoir"
+date: "25/03/2018"
+output: html_document
+---
+
+```{r, echo = FALSE, warning=FALSE,message=FALSE}
+require(ggplot2)
+require(gcookbook)
+```
+
+```{r, echo = TRUE}
+# white background instead of the default grey. can remove it or change the theme
+theme_set(theme_bw())
+```
+
+## Exercice 1: bar chart & color palette
+
+```{r, echo = TRUE}
+
+ggplot(uspopchange) + 
+  geom_col(aes(x = reorder(Abb, Change), y = Change , fill = Region),
+           colour = "black") +
+  scale_fill_brewer(type = "seq", palette = "Pastel2", direction = 1) +
+  coord_flip() +
+  labs(y = "Population change", x ="State")
+
+
+
+```
+
+## Exercice 2: overlapping data points 
+
+### First way
+
+```{r, echo = TRUE}
+ggplot(mpg, aes(cty, hwy)) + 
+  geom_jitter()
+```
+
+### Second way
+
+```{r, echo = TRUE}
+ggplot(mpg, aes(cty, hwy)) + 
+  geom_count(aes(color = ..n.., size = ..n..)) +
+  guides(color = 'legend')
+``` 
+
+## Exercice 3: histograms & density plots 
+
+We would like to see the distribution of city mileage (`cyl` in the `mpg` dataframe), distinguishing the vehicles' cylinders.
+
+First, do that with a plain histogram.
+
+```{r, echo = TRUE}
+
+ggplot(mpg) + 
+  geom_histogram(aes(cty, fill = factor(cyl) ))
+
+```
+
+But the result is quite disappointing. In particular, we cannot see how these histograms overlap.
+
+To solve this problem, we are going to use kernel density estimate (you are going to learn about that in Econometrics III), which are nothing but smoothed versions of histograms. Plot the distribution of city mileage by vehicles' cylinders using these density plots.
+
+```{r, echo = TRUE}
+
+ggplot(mpg, aes(cty, fill = factor(cyl), colour = factor(cyl) ) ) + 
+  geom_density(alpha = 0.1) + 
+  labs(title = "Distribution of mileage by vehicle's cylinders",
+       x = "City Mileage") + 
+  guides(colour=guide_legend(title="Number of cylinders")) + 
+  guides(fill=FALSE)
+  
+```
+
+## Exercice 4: time series
+
+
+
+```{r, echo = TRUE}
+table(climate$Source)
+berkeley = subset(climate, Source == "Berkeley")
+ggplot(berkeley, aes(Year)) + 
+  geom_ribbon(aes(ymin = Anomaly10y-Unc10y, ymax= Anomaly10y+Unc10y), fill = "mistyrose1") + 
+  geom_line(aes(y= Anomaly10y)) + 
+  labs(title= "Time series", 
+       subtitle = "Temperature anomaly in Celcius, smoothed over ten years",
+       xlab = "Year",
+       ylab = "Temperature anomaly (C°)")
+  
+
+```
+
+
+

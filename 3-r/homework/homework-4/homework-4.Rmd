@@ -60,7 +60,7 @@ _Hint_:
 
 ## Exercice 3: histograms & density plots 
 
-We would like to see the distribution of city mileage (`cyl` in the `mpg` dataframe), distinguishing the vehicles' cylinders.
+We would like to see the distribution of city mileage (`cty` in the `mpg` dataframe), distinguishing the vehicles' cylinders (`cyl`).
 
 First, do that with a plain histogram.
 

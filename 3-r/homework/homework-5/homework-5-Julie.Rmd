@@ -20,7 +20,11 @@ theme_set(theme_bw())
 
 ```{r, echo = T}
 
+# Importing DataBase
 team <- as.tibble(Lahman::Teams)
+
+# Subsetting the data to get only observations for American league and National one
+
 team <- filter(team, yearID>=1901, lgID != "FL")
 
 ```
@@ -29,9 +33,11 @@ team <- filter(team, yearID>=1901, lgID != "FL")
 
 ```{r, echo = TRUE}
 
-kable(head(team %>%
-          group_by(teamID, yearID) %>%
-              summarize(av_run = R/G)
+# Use a pipe to compute the mean (use kable to display the table nicely)
+
+kable(head(team %>%                       #selecting the databse
+          group_by(teamID, yearID) %>%    #order the columns
+              summarize(av_run = R/G)     #compute the mean
   )
 )
 
@@ -41,9 +47,13 @@ kable(head(team %>%
 
 ```{r}
 
+# Doing both at the same time : creating the dataframe + obtaining average runs per games (useful for next questions)
+
 Nteam = team %>% 
-  group_by(lgID, yearID) %>%
+  group_by(lgID, yearID) %>% 
     summarize(tot_run = sum(R), tot_game = sum(G), av_run = tot_run / tot_game)
+
+
 kable(head(Nteam))
 
 
@@ -52,6 +62,8 @@ kable(head(Nteam))
 **Q5**: plot the time series of average runs per game, for each league.
 
 ```{r}
+
+# Defining the plot G (in order to use it again for next question)
 
 G = ggplot() +
   geom_point(data = Nteam, aes(yearID, av_run, colour=lgID, shape=lgID), stat="identity") + 
@@ -69,13 +81,19 @@ As you can see, the time series are noisy. To get a better picture, we are going
 
 ```{r}
 
+# Computing the 10-year moving averages by league
+
 mov_av_AL = rollmean(filter(Nteam, lgID=="AL")$av_run, 10)
 mov_av_NL = rollmean(filter(Nteam, lgID=="NL")$av_run, 10)
+
+# Creating a dataframe to use ggplot easily
 
 mov_av = data.frame(
   year = rep(1905:2011,2),
   league = c(rep("AL", 107), rep("NL", 107)),
   mov_av = c(mov_av_AL, mov_av_NL))
+
+# Creating the plot (G is the plot we created in last question)
 
 G +
   geom_line(data = mov_av, mapping = aes(year, mov_av, colour=league)) +
@@ -86,6 +104,8 @@ G +
 **Q7**: create a new dataset that computes the difference between the average runs per game (both for the original data and the 10-year moving average) of the American league and the National league, for each year.
 
 ```{r, message=FALSE}
+
+# Computing averages and moving averages per league using our two databases
 
 AL_av = Nteam %>%
   group_by(lgID, yearID) %>%
@@ -107,6 +127,8 @@ NL_mav = mov_av %>%
       filter(league == "NL") %>%
         select(mov_av)
 
+# Creating a global DataBase that contains all variables of interest
+
 diff = data.frame(
   year = rep(1901:2016),
   av_AL = AL_av$av_run,
@@ -114,6 +136,8 @@ diff = data.frame(
   mav_AL = c(rep(NA, 5), AL_mav$mov_av, rep(NA, 4)),
   mav_NL = c(rep(NA, 5), NL_mav$mov_av, rep(NA, 4))
 )
+
+# Computing the differences : NL - AL
 
 diff = mutate(diff, 
               dav = av_NL - av_AL, 
@@ -125,6 +149,8 @@ kable(head(diff))
 **Q8**: you now have all the data needed to reproduce the original plot. Specifically, plot the time series of the difference of the 10-year moving average, and superpose to it the actual difference (i.e. not the 10-year moving average).
 
 ```{r}
+
+# Creating the plot
 
 ggplot(diff) + 
   geom_bar(aes(year, dav), stat="identity", alpha=0.2, width=0.4) + 

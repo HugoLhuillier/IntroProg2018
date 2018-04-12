@@ -1,0 +1,90 @@
+---
+title: "Homework #6"
+author: "Hugo Lhuillier"
+date: "06/04/2018"
+output: html_document
+---
+
+```{r, echo = FALSE, warning=FALSE,message=FALSE}
+require(tidyverse)
+```
+
+_Remember_: the cleaner and the more documented your code is, the more points you get.
+
+**All the plot should be made with `ggplot2`, all the data transformation with `dyplr`, all the data cleaning with `tidyr`**.
+
+The `who` dataset (that comes with the `tidyverse` package) contains  tuberculosis (TB) cases broken down by year, country, age, gender, and diagnosis method. The `who` dataset is a typical real-life dataset; it contains redundant columns, odd variable codes, and many missing values. 
+
+You can have a look at the entire dataset by running `View(who)`. 
+
+# Data cleaning
+
+In this section, you can either answer the questions one by one, or answer all of them simultaneously. 
+
+**Q1**: `country`, `iso2`, `iso3`, and `year` are all variables; however, given the name of all the other columns, and the number of `0`, it seems that these are values rather than variable. Create a new tibble that gathers all the columns from `new_sp_m014` to `newrel_f65`. Use this occassion to remove all the missing values from the dataset.
+
+```{r}
+# ANSWERE HRE
+```
+
+All the values you combined in the previous question have a similar structure. Namely,
+
+1. The first three letters: new or old cases of TB (in this dataset, only new cases are present) 
+1. The next two letters: type of TB
+    - `rel`: relapse
+    - `ep`: extrapulmonary
+    - `sn`: pulmonary that could not be diagnosed by a pulmonary smear 
+    - `sp`: pulmonary that could be diagnosed be a pulmonary smear 
+1. The sixth letter: sex of patients (`m`: males, `f`: females)
+1. The remaining numbers: age group
+    - `014` = 0–14 years old
+    - `1524` = 15–24 years old
+    - `2534` = 25–34 years old
+    - `3544` = 35–44 years old
+    - `4554` = 45–54 years old
+    - `5564` = 55–64 years old
+    - `65` = 65 or older
+
+There's a small problem: `new_rel_*` is encoded as `newrel_*` (e.g. `new_rel_m014` is encoded `newrel_m014`, id. for `new_rel_f1524` as `newrel_f1524`, etc.).
+
+**Q2**: using the function `str_replace()` from the `stringr` package, rewrite all the `newrel_*` values as `new_rel_*`. 
+
+```{r}
+# ANSWERE HRE
+```
+
+We are now able to create three new variables from our aggregate `key` variable defined in q1. 
+
+**Q3**: using a function from the `tidyr` package, create three new variables:
+
+  - `new`: `new` if it is a new case of TB
+  - `type`: type of TB
+  - `sexage`: sex and the age of the patient 
+    
+```{r}
+# ANSWERE HRE
+```  
+
+**Q4**: differentiate the `sexage` variable to create two new variables, `sex` and `age`.
+
+```{r}
+# ANSWERE HRE
+```
+
+**Q5**: Since all the cases of TB are new, drop the `new` variable. Similarly, drop `iso2` (we'll use `iso3` for some plotting later on)
+
+```{r}
+# ANSWERE HRE
+```
+
+**Q6**: Finally, we would like to improve the data type of our `tibble`. To do that, make the following transformation:
+
+  - `type` -> factor 
+  - `sex`  -> factor 
+  - `age`  -> ordered factor
+    
+```{r}
+# ANSWERE HRE
+```
+
+

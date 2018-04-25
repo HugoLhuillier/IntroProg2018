@@ -1,0 +1,49 @@
+---
+title: "Homework #6"
+author: "Julie Lenoir"
+date: "14/04/2018"
+output: html_document
+---
+
+```{r, echo = FALSE, warning=FALSE,message=FALSE}
+require(tidyverse)
+```
+
+# Data cleaning
+
+```{r}
+
+TBdata = who %>%
+  
+# Q1 : gathering all the columns from `new_sp_m014` to `newrel_f65` + removing missing values
+  
+  gather(new_sp_m014:newrel_f65, key = 'TB_type', value = 'cases', na.rm=T) %>%
+  
+# Q2 : harmonizing the names of the values we just created
+
+  mutate(TB_type = str_replace_all(TB_type, "wr", "w_r")) %>%
+  
+# Q3 : separating the column "TB_type" into "new", "type" and "sexage"
+  
+  separate(TB_type, into = c("new","type", "sexage"), sep = "_") %>%
+  
+# Q4 : separating the column "sexage" into "sex" and "age"
+  
+  separate(sexage, into = c("sex", "age"), sep=1) %>%
+  
+# Q5 : Drop "new" and "iso2"
+  
+  select(-new, -iso2) %>%
+  
+# Q6 : Change column types 
+
+  mutate(type = factor(type), 
+         sex = factor(sex), 
+         age = ordered(age))
+
+TBdata
+
+```
+
+
+

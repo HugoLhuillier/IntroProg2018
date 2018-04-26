@@ -1,0 +1,120 @@
+---
+title: "Homework #7"
+author: "Hugo Lhuillier"
+date: "06/04/2018"
+output: html_document
+---
+
+```{r, echo = FALSE, warning=FALSE,message=FALSE}
+require(tidyverse)
+require(AER)
+```
+
+_Remember_: the cleaner and the more documented your code is, the more points you get.
+
+## Consistency and bias of OLS estimators
+
+In this exercice, you will have to 
+
+1. simulate some data from a data generating process (DGP)
+1. show that the OLS estimator is unbiased (see reminder)
+1. show that the OLS estimator is consistent (see reminder)
+
+The goal of this exercice is to generate some data from a linear model for which we know the true value of the parameters, then ignore the true values and estimate the parameters via OLS to see if the OLS estimates are consistent and unbiased. This is a classic exercice in econometrics. 
+
+The data generating process we consider is the following, 
+
+$$
+  y_i = \alpha + \beta_1 x^1_i + \beta_2 x_i^2 + \beta_3 x_i^3 + \varepsilon_i
+$$
+where the individual variables $x_1^i$, $x_2^i$, $x_3^i$ and $\varepsilon_i$ follow
+\begin{align*}
+  x^1_i & \sim \mathcal{N}(3, 0.1), \\
+  x^2_i & \sim \text{Beta}(0.5,0.5), \\
+  x^3_i & \sim \text{Po}(2), \\
+  \varepsilon_i & \sim \mathcal{N}(0, 0.8),
+\end{align*}
+and the parameters are given by $\alpha = 2$, $\beta_1 = 0.5$, $\beta_2 = -1$, $\beta_3 = 2$.
+
+**Q1**: simulate the data for $10,000$ individuals, and store it in a `tibble`. The content of this `tibble` should be similar to the data an econometrician has access to (e.g. the $\varepsilon_i$'s and $\beta$'s are unknown, while the $y_i$'s and $x_i$'s can be observed).
+
+__Hint__: you will need to recompute this dataset for different sample size and different seeds (I'll explain what is a seed in **Q4**) later on. I therefore advise you to create a function `dgp` that simulates the dataset for a given sample size, `n`, and a given seed `s`, following the template below (_note: if you fill the template below, set `eval = TRUE`, otherwise your code will not run_)
+
+```{r, eval = FALSE}
+dgp <- function(s, n){
+  # set the seed of the random generating number
+  set.seed(s)
+  # simulate the regressors
+  
+  # set the true value of the parameters
+  
+  # simulate y and store all the information we know in a tibble
+  data  <- tibble( 
+      x1 = 
+      x2 = 
+      x3 = 
+      y  = 
+    )
+  return(data)
+}
+```
+
+**Q2**: to verify that our DGP is correct, plot the histogram of $x1$, and plot on top of it the true probability density function of a $\mathcal{N}(3, 0.1)$. Do the same for $x2$.
+
+```{r}
+# ANSWER HERE
+```
+
+**Q3**: estimate via `OLS` the following linear model, print the output, and test whether $\hat{\beta}_1$, $\hat{\beta}_2$, and $\hat{\beta}_3$ are jointly different from zero.
+$$
+y_i = \alpha + \beta_1 x^1_i + \beta_2 x^2_i + \beta_3 x_i^3 + \varepsilon_i
+$$
+
+```{r}
+# ANSWER HERE
+```
+
+**Q4**: show that the OLS estimates are unbiased.
+
+__Hint__:
+
+1. We would like to show that 
+$$
+\text{Bias}(\hat{\beta}) = \mathbb{E}(\hat{\beta}) - \beta \approx 0
+$$
+2. To that aim, we need to approximate $\mathbb{E}(\hat{\beta})$. One way to do that on a computer is to simulate many datasets with different seeds (see below), estimate for each dataset the $\beta$'s, and compare the distributions of the $\hat{\beta}$'s with the true $\beta$'s.  Since the sample size is finite and the seed is different for each simulation, we'll obtain slighlty different data, and therefore different $\hat{\beta}$'s.
+3. In practice, I would like you to simulate and estimate our model 500 times, with diffferent seeds each time. Then, plot the distribution $\hat{\beta}_2$, and plot the evolution of our numerical approximation of $\mathbb{E}(\hat{\beta}_2)$ as the number of simulation increases. 
+
+_What's a "seed"_: when asking your computer for random numbers, it uses a pseudorandom number generator, i.e. a sequence of numbers whose properties approximate the properties of sequences of random numbers. However, this sequence of numbers is not truly random; it is completely determined by an initial value. This initial value is called the seed. Therefore, by changing the seed, you are ensuring that the random numbers generated are different. In `R`, you can change the seed via `set.seed(<an integer>)`.
+
+```{r}
+# ANSWER HERE
+```
+
+**Q5**: show that the OLS estimates are consistent.
+
+__Hint__: 
+
+- We would like to show that $\hat{\beta}_1 \to \beta_1$ as $n \to \infty$
+- In the spirit, it is very similar to **Q4**, except that you should iterate on the sample size rather than on the seed
+- In practice, I would like you to simulate and estimate our model for sample sizes going from 100 to 10,000. Then, plot the estimates of $\beta_1$ against the sample size.
+
+```{r}
+# ANSWER HERE
+```
+
+## Reminder 
+
+**Unbiased estimator**: the bias of an estimator is the difference between the estimator's expected value, and the true value of the parameter being estimated, that is 
+
+$$
+\text{Bias}(\hat{\beta}) = \mathbb{E}(\hat{\beta}) - \beta.
+$$
+
+**Consistent estimator**: a consistent estimator converges in property to the true value of the parameter being estimated when the sample size goes to infinity, that is
+
+$$
+\text{plim}_{n \to \infty} \, \hat{\beta}_n = \beta.
+$$
+
+

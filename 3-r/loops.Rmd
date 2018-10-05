@@ -1,0 +1,349 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Loops* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The BLRs: again & again 
+
+- Loops are one of the easiest way to automate your work
+- Allows you to repeat some instructions without re-writing the them every time
+
+# `For` loops
+
+## Automate your work
+
+- `For` loops lets you iterate over different items and apply some instructions to each of these items
+```{r, echo = TRUE}
+# DO NOT TRY THIS AT HOME
+words <- c("These", "are", "different", "words")
+print(words[1])
+print(words[2])
+print(words[3])
+print(words[4])
+```
+
+>- **Exercice:** write the exact same code for a vector containing 100 entries
+    
+## Automate your work
+
+- `For` loops lets you iterate over different items and apply some instructions to each of these items
+```{r, echo = TRUE}
+# DO NOT TRY THIS AT HOME
+words <- c("These", "are", "different", "words")
+print(words[1])
+print(words[2])
+print(words[3])
+print(words[4])
+```
+- Terrible function 
+    
+    >1. Doesn't scale
+    >2. Requires too much manpower!
+
+<!-- if we give it a longer vector, it only prints part of the data, and if we give it a shorter input, it returns NA --> 
+
+## Automate your work
+
+- Whenever you want to do something repetitive: **use a loop**
+```{r, echo = TRUE}
+words <- c("Now", "it", "works", "regardless", "of", "the", "length", "of", "the", "vector")
+for (word in words) {
+    print(word)
+}
+```
+
+## Automate your work
+
+- Alternatively
+```{r, echo = TRUE}
+words <- c("Now", "it", "works", "regardless", "of", "the", "length", "of", "the", "vector")
+for (i in 1:length(words)) {
+    print(words[i])
+}
+```
+
+## `For` loops: general structure
+
+- A `for` loop always write 
+```{r, eval = FALSE}
+for (variable in collection) {
+  do things with variable
+}
+```
+
+## `For` loops: exercice 
+
+- Write a functiont that takes a numerical vector as argument, and sum its elements via a `for` loop
+- Test your function using the `R` function `sum`
+
+## `For` loops: solution 
+
+- Write a functiont that takes a numerical vector as argument, and sum its elements via a `for` loop
+```{r, echo = TRUE}
+require(testthat)
+own_sum <- function(vec) {
+  s   <- 0 
+  for (v in vec) { 
+    s <- s + v  
+  }
+  return(s)
+}
+```
+```{r, echo = TRUE}
+x <- c(1, 2, 3)
+test_that("Testing own_sum function", {
+  expect_true( own_sum(x) == sum(x), "own_sum == sum")
+})  
+```
+<!-- DO NOT FORGET TO COMMENT THE FUNCTION 
+1. start with s = 0 
+1. then for each iteration, v is assigned a new element in the vector (in order)
+1. then we set s equal to its curent value + the value of v 
+
+RECALL: once again, should always use `R` function over our own function if they have the same purpose, because R functions are much faster!
+Reason: sum is much faster than the interpreted for loop because sum is coded in C to work with a vector of numbers. Many of R’s functions work this way; the loop is hidden from you in C.
+-->
+
+## `For` loops
+
+- If you are not sure what the sum is doing, you can print the elements in the collection via the function `print`
+```{r, echo = TRUE}
+for (v in c(1, 2, 3)){
+  print(v)
+}
+```
+- Note: `v` is a (loop) variable, used to record progress in a loop; the variable exists after the loop is over!
+```{r, echo = TRUE}
+v
+```
+
+# Other loops 
+
+## `while` loop
+
+- A logical condition determines whether the iteration should go on
+
+    1. if the logical condition = `TRUE`: the instructions are executed 
+    1. otherwise, stop
+
+```{r, eval = FALSE}
+while(logical condition){
+  do things
+}
+```
+
+## `while` loop: an example
+
+- **Ex**
+```{r, echo = TRUE}
+x <- 1 
+while (x < 5) { 
+  x <- x + 1
+  print(x)
+}
+```
+
+- Careful: can easily end up with infinite sum (e.g. if forgot to update with `x <- x + 1`)
+
+## Loops: `next` and `break`
+
+- Can stop the iteration with `break`
+```{r, echo = TRUE}
+x <- 1 
+while (x < 5) {
+  x <- x + 1 
+  if (x == 3) { 
+    break       # stop and exit the loop
+  }
+  print(x)
+}
+```
+- Can skip steps with `next` 
+```{r, echo = TRUE}
+x <- 1 
+while (x < 5) {
+  x <- x + 1 
+  if (x == 3) { 
+    next       # any instructions after next are not executed for this iteration
+  }
+  print(x)
+}
+```
+
+## `repeat` loop
+
+- Very similar to `while` loops, but the block of instructions is executed at least one, regardless whether the logical condition is met, and the condition is hard-coded 
+```{r, echo = TRUE} 
+x <- 1 
+repeat {
+  x <- x + 1 
+  print(x)
+  if (x == 5) {
+    break
+  }
+}
+```
+
+## `repeat` loop: exercice 
+
+- Reproduce the loop that printed `2, 4, 5` with a `repeat` loop
+
+## `repeat` loop: solution 
+
+- Reproduce the loop that printed `2, 4, 5` with a `repeat` loop
+```{r, echo = TRUE} 
+x <- 1 
+repeat {
+  x <- x + 1 
+  if (x == 3) { 
+    next
+  }
+  print(x)
+  if (x == 5) {
+    break
+  }
+}
+```
+
+
+# Vectorized operations
+
+## Sum vs. vectors (= intro to profiling)
+
+- `R` hates raw sum, but is very good at handling vectors 
+- **Ex**: could write our own function to add two vectors: 
+
+$$
+z = x+y \quad \text{for} \, x,y \in V.
+$$
+```{r, echo = TRUE}
+vec_add <- function(a, b){
+  res <- numeric(length = length(a))  # create a new vector to store the sum
+  for (i in seq_along(a)) {           # seq_along generates indices for each element in `a` 
+                                      # equivalent to 1:(length(a))
+    res[i] <- a[i] + b[i]             # for each entry in the vector, store the sum in res
+  }
+  return(res)
+}
+a   <- 1:10e5; b <- 1:10e5
+res <- vec_add(a, b)
+```
+
+## Sum vs. vectors (= intro to profiling)
+
+- `vec_add` is a terrible function: 
+
+    1. take only two arguments, so cannot do $x + y + z$ for $x,y,z \in V$
+    1. will not throw an error if a and b are not of the same length
+
+- `R` already has a vectorized functions to do that: `+`
+```{r, echo = TRUE}
+res2 <- a + b
+```
+```{r, echo = TRUE}
+test_that("Sum of vectors", {
+  expect_true( all(res == res2), "res == res2")
+})  
+```
+
+## Timing your code
+
+- Time the execution of your code via `system.time()`
+```{r, echo = TRUE}
+system.time(result <- vec_add(a, b))
+system.time(result <- a + b)
+```
+
+## Vector recycling
+
+- If perform an operation on vectors of unequal length, `R` will "recycle" elements of the shorter vector(s) to match the longest one 
+```{r, echo = TRUE}
+a <- 1:10; b <- 1:5 
+a + b
+```
+<!-- 
+When R reaches the end of the shorter vector b, it starts again at the first element of b and continues until it reaches the last element of the longest vector a
+--> 
+- Recycling occurs silently if the lengths of the two vectors are multiple 
+```{r, echo = TRUE}
+a <- 1:10; b <- 1:3
+a + b
+```
+- Why? Very useful when want to perform the same operation on every element of a vector
+```{r, echo = TRUE}
+a <- 1:10; b <- 5 
+a * b
+```
+<!-- Remember there are no scalars in R, so b is actually a vector of length 1; in order to add its value to every element of a, it is recycled to match the length of a. -->
+
+## `for` or `apply` ?
+
+- `For` loop: same function calls to a collection of objects
+- Very similar to `apply`: each of the following functions take an argument `FUN`, a function to be applied to each element of the object 
+
+    - `apply`: apply the function over the margins of an array (rows or columns of a matrix)
+    - `lapply`: apply the function over an object an return list
+    - `sapply`: apply the function over an object and retur a simplified object (an array) if possible
+    - `vapply`: similar to `sapply` but can specify the type of object to be returned
+
+<!-- Deciding whether to use for or one of the apply family is really personal preference;
+1. for loops are often more natural 
+1. for several related operations, a for loop will avoid you having to pass in a lot of extra arguments to your function 
+NOTE: in most cases, apply functins are not much faster than for loops -->
+
+## Rules for `R` loops 
+
+1. Do not use loop when a vectorized object exists <!-- already gave an example earlier on -->
+1. Do not grow objects during the loop
+1. Instead, allocate an object to hold the results and fill it in during the loop
+
+## Rules for `R` loops: example
+
+```{r, echo = TRUE}
+col_median_slow <- function(mat){ 
+  # function that computes the median for each column in a matrix 
+  for (i in 1:(dim(x)[2])){ 
+      if (i == 1) { 
+        out <- median(x[,i])
+      } else {
+        out <- cbind(out, median(x[,i]))
+      }
+  }
+  return(out)
+}
+```    
+```{r, echo = TRUE}
+col_median_fast <- function(mat){ 
+  # function that computes the median for each column in a matrix 
+  out <- numeric(length = dim(mat)[2])
+  for (i in 1:(dim(x)[2])){ 
+    out[i] <- median(x[,i])
+  }
+  return(out)
+}
+```  
+<!-- in the slow version, add a new column to out at each iteration, hence at each iteration, R has to create a new object and copy across the information just to add a new element or row/column 
+-->
+<!-- FINAL NOTE 
+  note how often we use function. in the two examples above, could have written these examples w/out functions, but always better to do it in a function (more re-usable + could time etc.)
+-->
+
+## Rules for `R` loops: example
+
+```{r, echo = TRUE}
+x <- matrix(1:10e5, ncol = 10e3)
+system.time(result <- col_median_slow(x))
+system.time(result <- col_median_fast(x))
+```

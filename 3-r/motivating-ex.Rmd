@@ -1,0 +1,186 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Introduction* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## R: where the fun begins
+
+Why are we using `R`? 
+
+- Better than Stata by ANY metric
+- Free 
+- Extremely popular amongst scientists, in particular statistians and economists
+- Exists a large library of external packages
+
+# Variables
+## A very gentle intro. to variables
+
+* A variable: a container with a name
+* To create a variable 
+
+```{r, echo = TRUE}
+weight_kg <- 55
+weight_kg
+```
+
+- Can treat the variable like a regular number
+
+```{r, echo = TRUE}
+weight_kg + 1
+```
+
+- Can change an variable's value by assigning it a new value
+
+```{r, echo = TRUE}
+# changing the variable weight_kg from 55 to 60
+weight_kg <- 60
+```
+
+<!-- Once a variable is created, we can use the variable name to refer to the value it was assigned. The variable name now acts as a tag. Whenever R reads that tag (weight_kg), it substitutes the value (55). 
+In general, R will print to the console any object returned by a function or operation unless we assign it to a variable.-->
+
+## A very gentle intro. to variables
+
+- R only stores the value, not the calculation used to create a variable ($\neq$ Excel)
+```{r, echo = TRUE}
+weight_lb <- 2.2 * weight_kg
+c(weight_kg, weight_lb)
+weight_kg <- 80 
+c(weight_kg, weight_lb)
+```
+
+<!-- 
+1. `c` is also a function (probably the most used function in R), stands for combine
+2. 1:5 = c(1, 2, 3, 4, 5) but much faster
+-->
+
+## Variables' names: conventions
+
+- Some conventions on the name of variables 
+    1. start with lower case letters 
+    1. separate words with underscores
+    1. use only lowercase letters, underscores, and numbers
+
+# Motivating example: analyzing data 
+
+## The data
+
+- In the `data` directory, several panel data: data on inflammation in patients who have been given a new treatment for several days
+- Goal: load the data, calculate the average value of inflammation per day, plot the results
+
+## Loading data 
+
+- Need to move to the correct directory, then load the data
+```{r, echo = TRUE}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r/data/")
+d = read.csv(file = "inflammation-01.csv", header = FALSE)
+```
+- `header` is an optional argument, with a default value = `TRUE`. Get the list of all the optional arguments by running `help(read.csv)`
+<!-- 
+both setwd() and read.csv() are functions that takes some arguments 
+1. the first argument of both functions is a String => put quotes 
+2. the second argument of read.csv is what we call a Boolean value (either true or false). Header:  whether the first line of the file contains names for the columns of data
+
+d = data frame. more on this later: but basically, like an excel sheet.
+
+NOTE: if forgot to add `d` before the `read.csv`, `R` does not know what to do with the function's output. will display the full contents of the file inflammation-01.csv in the console. instead here, `d` is a variable containing the data that was in `inflammation-01`
+-->
+- Display the first lines of the data set with `head` 
+```{r, echo = TRUE}
+head(d, n = 3L)
+```
+
+# Manipulating data
+## Indexing
+- To take a subset of the data set, provide an **index** in square bracket: `[# row, # column]` 
+```{r, echo = TRUE} 
+d[1,1]                      # first row, first column
+d[c(1, 3, 5), c(10, 20)]    # rows (1, 3 and 5), columns (10 and 20)
+d[1, 1:5]                   # columns from (1 to 5) and row 1
+d[, 1]                      # all columns from row 1
+```
+
+## Indexing: exercice
+
+- In our data set, each row is a patient, each column is a day, such that `d[1,1]` is the inflammation measured on patient 1 on day 1
+- **Exercice**: given that `min(data)`, `max(data)`, `mean(data)` are functions returning the equivalent statistics on d[c(2, 4, 10),]`data`, finds 
+    1. the minimum inflammation on day 1 across all patients
+    1. the maximum inflammation experienced by patient 5 (across all days)
+    1. the maximum inflammation on days 4, 8 and 12 across all patients
+    1. the minimum inflammation experienced by patients 3 and 6 from day 1 to 5
+    1. the mean inflammation experienced by patients 2, 4 and 10 (across all days)
+
+## Indexing: solution
+
+```{r, echo = TRUE}
+min(d[, 1])               # the min inflammation on day
+max(d[5, ])               # the max inflammation for patient 5 
+max(d[, c(4, 8, 12)])     # the max inflammation on days 4, 8 and 12 
+min(d[c(3, 6), 1:5])      #  the min inflammation for patients 3 and 6 from day 1 to 5
+rowMeans(d[c(2, 4, 10),]) # the mean inflammation for patients 2, 4 and 10
+```
+
+## Sufficient statistics 
+
+- Faster way to get some sufficient statistics (**by columns**): `summary`
+```{r, echo = TRUE}
+summary(d[, 1:5])
+```
+<!-- ask what would the command 
+summary(d[1:4,]) 
+do for instance?-->
+
+## The `apply` function
+
+- What if we want some info, say the median, for each partient (= row)? No such things as `rowMedian`
+- `apply`: repeat a function on all of the rows (`MARGIN = 1`) or columns (`MARGIN = 2`) of a data frame
+```{r, echo = TRUE}
+apply(d, 1, median)
+```
+
+## The `apply` function: exercice
+
+- **Exercice**: compute in two different ways the mean for the first 10 patients of our data 
+
+## The `apply` function: solution
+
+- **Exercice**: compute in two different ways the mean for the first 10 patients of our data 
+```{r, echo = TRUE}
+apply(d[1:10,], 1, mean)
+rowMeans(d[1:10,])
+```
+- __NOTE__: whenever a function is coded in base R, use it!
+
+# $\heartsuit$ plotting $\heartsuit$
+## $\heartsuit$ plotting $\heartsuit$
+
+- Quote from a wise man
+
+> what the point of doing economics is if plotting your data you cannot, hmm?  
+
+## $\heartsuit$ plotting $\heartsuit$
+
+- `R`'s plot are very nice! 
+```{r, fig.align='center', echo = TRUE}
+plot(apply(d, 2, max), xlab = "day", ylab = "maximum", main = "maximum inflammation by day")
+```
+
+## $\heartsuit$ plotting $\heartsuit$
+
+- `R`'s plot are **very** nice! 
+
+```{r, fig.align='center', echo = FALSE}
+boxplot(d, main = "Summary")
+```

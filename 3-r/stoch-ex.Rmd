@@ -1,0 +1,48 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *Application: Stochastic processes* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## AR(1): one time shock 
+
+- Write a function that simulates an AR(1) process. Assume that there's a single shock in the first period. That is, simulate
+
+$$
+\begin{cases}
+  y_t = 0 \qquad \quad \text{ for} \, t \leq 0, \\
+  y_t = \epsilon \qquad \quad \text{ for} \, t = 1, \\
+  y_{t} = \rho y_{t-1} \qquad \text{for} \, t > 1,
+\end{cases}
+$$
+
+for $\epsilon \sim F(\epsilon)$. Plot the output of your function.
+
+## AR(1)
+
+- Write a function that simulates an AR(1). That is, for $0 \leq t \leq T$, simulate
+
+$$
+\begin{cases}
+  y_t = y_0 \quad \qquad \qquad \text{ for} \, t = 0, \\
+  y_{t} = \rho y_{t-1} + \sigma \epsilon_t \qquad \text{for} \, t > 0,
+\end{cases}
+$$
+
+for $\epsilon \sim F(\epsilon)$.
+
+## AR(1): Monte carlo simulations
+
+- Simulate many times the AR(1) process -- with same $T$, $\rho$ and $\sigma$. Plot the resulting time series, as well as the mean value of all the time series for each time period
+

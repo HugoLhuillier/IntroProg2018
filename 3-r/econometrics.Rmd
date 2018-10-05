@@ -1,0 +1,483 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: econometrics* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    # in class use 
+    css: my-style-class.css
+    # css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center', warning = F)
+```
+```{r, include = FALSE}
+require(tidyverse)
+require(nycflights13)
+require(gapminder)
+require(Lahman)
+require(gridExtra)
+require(ggthemes)
+# for class
+theme_set(theme_dark())
+```
+
+# Formulas 
+
+## Formulas 
+
+- Formulas: used to specify models; encoded with `~`
+- Ex: `y ~ x` stands for "`y` is explained by `x`"
+- Use extensively for econometric analysis, but not only
+```{r}
+x <- seq(from = 0, to = 10, by = 0.3)
+y <- 2 + 3 * x + rnorm(length(x))
+plot(y ~ x)
+```
+
+# Disclaimer
+
+## Disclaimer
+
+- Will not cover:
+
+    - panel data (very similar to OLS)
+    - time series (excellent tools from the `stats` and `tseries` packages)
+    - quantile regressions 
+
+# Univariate Linear Regression 
+
+## Inroduction 
+
+- Interested in estimating the $\beta$s in 
+$$
+y = X \beta + \epsilon
+$$
+- Estimates: $\hat{\beta} = (X^T X)^{-1} X^T y$
+- Fitted values: $\hat{y} = X \hat{\beta}$
+- Residuals: $\hat{\epsilon} = y - \hat{y}$
+- Residual sum of squares: $RSS = \hat{\epsilon}^T \hat{\epsilon}$
+
+## Regressions in `R`
+
+- Models are estimated by calling a model-fitting function
+- Most of them take two key arguments: the formula and the data 
+- For **l**inear **m**odels fitted with OLS: `lm()`
+- These functions return a _fitted-model object_, from which can extract the point estimates, compute predicted values, etc.
+
+## Linear regression: example
+
+- Data from Stock & Watson (2007) on subscriptions to economics journals at US libraries for the year 2000
+```{r}
+# do not forget library(tidyverse)
+data(Journals, package = "AER")
+journals <- as_tibble(Journals)
+journals
+```
+- Goal: estimate the effect of the price per citation on the number of library subscriptions
+
+## Linear regression: example 
+
+- **Ex**: compute a new variable, the price per citation, compute some summary statistics, and plot the number of subscriptions againsts the price per citation. Combine the summary statistics and the plot to describe what type of model we should use.
+
+## Linear regression: example 
+
+```{r}
+journals <- journals %>% 
+            mutate(citeprice = price / citations)
+summary(select(journals,subs,price,citeprice))
+ggplot(journals) + geom_point(aes(x = citeprice, y = subs))
+```
+
+## Linear regression: example 
+
+```{r, echo = FALSE, message = FALSE}
+require(gridExtra)
+g <- ggplot(journals)
+p1 <- g + geom_histogram(aes(x = citeprice), fill = "tomato3")
+p2 <- g + geom_histogram(aes(x = subs), fill = "tomato3")
+p3 <- g + geom_histogram(aes(x = log(citeprice)), fill = "tomato3")
+p4 <- g + geom_histogram(aes(x = log(subs)), fill = "tomato3")
+grid.arrange(p1,p2,p3,p4)
+```
+- Wide range of the variables + big skewness: linear log-log model
+$$
+\log(subs_i) = \beta_1 + \beta_2 \log(citeprice_i) + \varepsilon_i
+$$
+
+## Fitted a liner model with OLS
+
+- To estimate our model and store it in `jour_lm`
+```{r}
+jour_lm <- journals %>% 
+            lm(log(subs) ~ log(citeprice), data = .)
+summary(jour_lm) # prints the result of the estimation
+```
+
+## Fitted a linear model with OLS 
+
+- **Note**: `ggplot2` also has a linear fitting function that directly plots the output 
+```{r}
+ggplot(journals, aes(x = log(citeprice), y = log(subs))) + 
+  geom_point() + 
+  stat_smooth(method = "lm", col = "tomato3")
+```
+
+## Functions working on linear models 
+
+- `coef()`: extracts the regression coefficients
+- `confint()`: returns confidence intervals on the estimates
+- `residuals()`: extracts the residuals
+- `fitted()`:  returns the fitted values
+- `predict()`: computes predictions for new data
+- `plot()`: produces diagnostic plots
+
+## Functions working on linear models 
+
+```{r}
+coef(jour_lm)                   # extract the coefficients
+confint(jour_lm, level = 0.95)  # compute the 95% ci 
+# build a new data set and predict the # of subscriptions based on our model
+journals_new <- tribble(
+  ~citeprice,
+  1.80,
+  2.0,
+  2.11
+)
+predict(jour_lm, newdata = journals_new)
+```
+
+## Diagnostic plots
+
+- Base `R` plot functions offer some diagnostic plots
+
+    1. residuals vs. fitted values
+    2. QQ plot for normality
+    3. Scale-location plot
+    4. Cook's distance, leverage and residuals
+    
+## Residuals vs. fitted values plot
+
+- Useful to test $\mathbb{E}(\varepsilon \mid X) = 0$
+- This plot will tell you if there are systematic variations in the residuals
+```{r}
+plot(jour_lm, which = 1)
+```
+
+## QQ plot for normality 
+
+- Key assumption when doing OLS: the error terms are i.i.d. and normally distributed 
+- QQ plot for normality: compares the residuals vs. "ideal" normal observations
+
+```{r}
+plot(jour_lm, which = 2)
+```    
+
+## Scale-location plot
+
+- Depicts $\sqrt{\mid \hat{y}_i - y_i \mid}$, the standardized residuals, against $\hat{y}_i$
+- Test whether the variances of the error terms are identical, i.e. test for homoskedasticity
+```{r}
+plot(jour_lm, which = 3)
+```  
+<!-- variance decreases with the fitted values aka inceases with the price per citation -->
+- Alternatively, can use the Breusch-Pagan test woth `bptest(jour_lm)`
+
+## Testing linear hypothesis 
+
+- `summary()` indicates individual significance of each regressor and joint significance of all regressors 
+- `linearHypothesis()` from the `car` package allows to test for more general hypothesis
+- First argument: a fitted-model object 
+- Second argument can be of two types:
+
+    1. Specify the linear hypothesis with a string 
+    1. Specify an `hypothesis.matrix` ($R$) and a `rhs` vector ($r$), as in 
+    
+    $$
+    H_0: R \beta = r
+    $$
+- Returns the models (restricted and non-restricted), along with their degrees of freedom, RSS, and associated $F$ statistic
+
+## Testing linear hypothesis
+
+- **Ex:** test the hypothesis that the elasticity of the number of library subscriptions with respect to the price per citation equals −0.5, i.e. $H_0: \beta_2 = -0.5$ 
+
+```{r, message = FALSE}
+library(car)
+```
+```{r}
+linearHypothesis(jour_lm, "log(citeprice) = -0.5")
+```
+```{r, eval = FALSE}
+# alternatively
+linearHypothesis(jour_lm, hypothesis.matrix = c(0, 1), rhs = -0.5)
+```
+
+# Multivariate Linear Regression
+
+## Multivariate Linear Regression
+
+- To illustrate: CPS of 1988
+```{r}
+data("CPS1988", package = "AER")
+cps <- as_tibble(CPS1988)
+cps
+```
+<!-- 
+3 continuous variables
+a) wage 
+b) education 
+c) experience 
+categorical variables:
+a) ethnicity 
+b) smsa: live in an urban region
+c) region 
+d) parttime
+
+ask if anything strking? education is negative:
+compute experience as: age - education - 6
+-->
+
+## Multivariate Linear Regression 
+
+- Interested in the model
+$$
+\log(wage_i) = \beta_1 + \beta_2 \, exp_i + \beta_3 \, exp_i^2 + \beta_4 \, education_i + \\ \beta_5 \, ethnicity_i + \varepsilon_i
+$$
+```{r}
+cps_lm <- cps %>%
+          lm(log(wage) ~ experience + I(experience^2) + education + ethnicity, data = .)
+```
+
+## Multivariate Linear Regression
+
+```{r}
+summary(cps_lm)
+```
+
+## Dummy variables
+
+- In the above summary, have `ethnicityafam` because `cauc` is taken as the reference category
+- Unordered factors are always handled like this by `R`: `R` always creates a reference category
+- Can modify the reference category with `relevel(<factor>, ref = <new_reference>)`
+- Alternatively, can remove the intercept to avoid the multicolinearity with `-1`
+```{r, eval = FALSE}
+# use afam as reference category
+lm(log(wage) ~ experience + I(experience^2) + education + relevel(ethnicity, ref = "afam"), data = cps)
+# remove the intercept
+lm(log(wage) ~ experience + I(experience^2) + education + ethnicity - 1, data = cps)
+```
+
+## The function `I()`
+
+- Within formulas, the mathematical operators have different meaning. For `x` and `y` two variables that are respectively continuous and discrete,
+
+    - `x + y`: add the two variables in the formula
+    - `x : y`: add the interaction between `x` and `y`
+    - `x * y`: add the two variables and their interaction, i.e. `x + y + x : y`
+    - `y / x`: compute an explicit slope estimate for each category of `y`
+    - `(a + b + c)^2`: add all two-way interactions betwee `a`, `b` and `c`
+    
+- To keep their arithmetic meaning, need to enclose them inside a `R` function, e.g. `log(x1 * x2)` would work; if does not require a transformation, `I(x1 * x2)` is used as the "identity" function
+
+## Interactions 
+
+- **Ex**: to study the interaction between education and ethnicity
+```{r}
+cps_int <- cps %>% 
+           lm(log(wage) ~ experience + I(experience^2) + education * ethnicity, data = .)
+summary(cps_int)
+# the last terms would be identical to 
+# education + ethnicity + education : ethnicity
+```
+
+## Interactions 
+
+- **Ex**: could also fit separate regressions for African-Americans and Caucasians 
+- Below, `/` specifies that the terms within parentheses are nested within `ethnicity`
+```{r}
+cps_sep <- cps %>%
+           lm(log(wage) ~ ethnicity / (experience + I(experience^2) + education) - 1, data = .)
+summary(cps_sep)
+```
+
+## Hypothesis testing
+
+- For linear hypothesis testing, id. 
+$$
+H_0: \beta_2 = \beta_3 = 0
+$$
+```{r}
+# by default, test = 0
+linearHypothesis(cps_lm, 
+                  hypothesis.matrix = c(0, 1, 1, 0, 0))
+```
+
+# WLS, GLS and FGLS
+
+## Weighted least squares
+
+- In our work on the effect of price on journals' subscriptions, our data featured heteroskedasticity
+```{r}
+plot(jour_lm, which = 3)
+```
+
+## Weighted least squares
+
+- Standard remedy: weighted least squares
+- _Test 1_: use the inverse of the square of the price per citation as a weight
+```{r}
+jour_wls1 <- journals %>%
+             lm(log(subs) ~ log(citeprice), data = ., weights = 1 / citeprice^2)
+plot(jour_wls1, which = 3)
+```
+<!-- even worse! -->
+
+## Feasible generalized least squares
+
+- Very frequently: no clue what weight to use, leading to the feasible generalized least square (FGLS)
+
+    1. fit the model as if were homoskedastic 
+    $$
+    \log(subs_i) = \beta_1 + \beta_2 citeprice_i + \varepsilon_i
+    $$
+    1. fit a linear model on the squared residuals
+    $$
+    \log((subs_i - \hat{\beta}_1 - \hat{\beta}_2 citeprice_i)^2) = \alpha_1 + \alpha_2 citeprice_i
+    $$
+    2. fit the model, using as weights the predicted values of residuals
+    
+## Feasible generalized least squares
+
+```{r}
+# first step already done
+# jour_lm <- lm(log(subs) ~ log(citeprice), data = journals)
+aux_reg <- lm(log(residuals(jour_lm)^2) ~ log(citeprice), data = journals)
+jour_fgls <- lm(log(subs) ~ log(citeprice), data = journals, weights = 1 / exp(fitted(aux_reg)))
+plot(jour_fgls, which = 3)
+```
+
+# Models of Microeconometrics
+
+## Introduction
+
+- Probit, logit and similar models are referred to as generalized linear models (GLMs)
+- Most of the time, closed-form solutions for the estimator do not exist, and the estimation occurs via some numerical method 
+- In `R`, most of these estimation procedures  are already coded for you in the function `glm()`
+
+## Binary dependent variables 
+
+- Logit and probit regressions take the form:
+$$
+\mathbb{E}(y_i \mid x_i) = p_i = F(x_i^T \beta)
+$$
+where $F$ is the standard normal cdf in the probit case, and the logistic CDF in the logit case
+- `glm()` has two key arguments:
+
+    1. `family` (here, the family is binomial)
+    1. `link` (logit, or probit)
+    
+## Binary dependent variables 
+
+- **Ex**: female labor force partitipcation, based on Switzerland data
+```{r}
+data("SwissLabor", package = "AER")
+labor <- as_tibble(SwissLabor)
+labor
+```
+- Model:
+$$
+\text{Prob}(participation_i = yes) = \beta_1 + \beta_2 income_i + \beta_3 education_i + \\ 
+\beta_4 age_i + \beta_5 age_i^2 + \beta_6 youngkids_i + \\ 
+\beta_7 oldkids_i + \beta_8 foreign_i + \varepsilon_i
+$$
+
+## Binary dependent variables 
+
+- Before running the model, can use a spinogram to have an idea of what the data looks like 
+```{r, echo = FALSE}
+par(mfrow = c(2, 1))
+```
+```{r}
+# Base R plotting 
+par(mfrow = c(2, 1))
+plot(participation ~ age, data = labor, ylevels = 2:1)
+plot(participation ~ education, data = labor, ylevels = 2:1)
+```
+```{r, echo = FALSE}
+par(mfrow = c(1, 1))
+```
+
+## Probit 
+
+- In `R` 
+```{r}
+labor_probit <- labor %>% 
+  glm(participation ~ . + I(age^2), data = ., family = binomial(link = "probit"))
+summary(labor_probit)
+```
+
+## Marginal effects 
+
+- As you know, efects in probit regressions vary with the regressors:
+$$
+\frac{\partial \mathbb{E} (y_i \mid x_i)}{\partial x_{i,j}} = \phi(x_i^T \beta) \beta_j
+$$
+- Can report sample average marginal effects: 
+$$
+  \frac{\partial \mathbb{E} (y_i \mid x_i)}{\partial x_{i,j}} \approx \frac{1}{n} \sum_{i=1}^n \phi(x_i^T \hat{\beta}) \hat{\beta}_j 
+$$
+```{r}
+avg <- mean(dnorm(predict(labor_probit, type = "link")))
+avg * coef(labor_probit)
+```
+
+## Marginal effects 
+
+- Alternatively, can evaluate the partial derivative at the average regressor
+$$
+  \frac{\partial \mathbb{E} (y_i \mid x_i)}{\partial x_{i,j}} \approx \phi( \bar{x}^T \hat{\beta}) \hat{\beta}_j
+$$
+- Problem: how to deal with factors?
+- Solution: report average effects for all levels of the factors
+```{r}
+av <- labor %>%
+      group_by(foreign) %>% 
+      summarize(income = mean(income),
+                age = mean(age),
+                education = mean(education),
+                youngkids = mean(youngkids),
+                oldkids = mean(oldkids)) %>%
+      predict(labor_probit, newdata = ., type = "link") %>%
+      dnorm(.)
+# swiss
+av[1] * coef(labor_probit)[-7]
+```
+
+<!-- TODO: introduce the effects package -->
+
+## Multinomial, Ordinal & Tobit regressions 
+
+- Multinomial, ordinal and Tobit regressions are implemented in `R` 
+- Multinomial: `multinom(<formula>, data = <data>)` from the `nnet`package
+- Ordinal: `polr(<formula>, data = <data>)` from the `MASS` package
+- Tobit: `tobit(<formulas>, data = <data>)` from the `AER` package (or `survival`)
+
+## Multinomial, Ordinal & Tobit regressions: visualization 
+
+- As for the binary models, `R` offers some visualization tools 
+```{r}
+data("BankWages", package = "AER")
+jobs <- as_tibble(BankWages)
+plot(job ~ education, data = jobs)
+```
+
+
+
+
+

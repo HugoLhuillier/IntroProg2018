@@ -1,0 +1,373 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Data Analysis (data visualization)* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, include = FALSE}
+require(tidyverse)
+require(nycflights13)
+require(gapminder)
+require(Lahman)
+```
+
+# Packages 
+
+## Tidyverse 
+
+- A package: a collection of functions, data, and documentation that extends the capabilities of base R
+```{r, eval = FALSE}
+install.packages("tidyverse") # install a package 
+library(tidyverse)            # load the library / package
+```
+- `tidyverse`: a collection of packages that work very well together
+
+# Data visualization 
+
+## `ggplot2`
+
+- Seems complicated to use 
+- Generates quickly amazingly detailed plots 
+- Practial question: 
+
+  > Do cars with big engines use more fuel than cars with small engines?
+  
+- Will answer via the `mpg` data frame (`displ`: size, `hwy`: car's fuel effiency)
+
+```{r, echo = TRUE}
+head(mpg)
+```
+
+<!-- 
+hwy, a car’s fuel efficiency on the highway, in miles per gallon (mpg):  a car with a low fuel efficiency consumes more fuel than a car with a high fuel efficiency when they travel the same distance.
+-->
+
+## `ggplot2`: default template 
+
+- Every `ggplot2` plot follows
+```{r, echo = TRUE, eval = FALSE}
+ggplot(data = <DATA>) + <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+- `ggplot()` creates a coordinate system that you can add layers to
+- `data`: the dataset to be used in the graph 
+- `GEOM_FUNCTION`: adds a layer to the plot
+- `mapping` and `aes`: defines how variables in your dataset are mapped to visual properties
+
+# Scatter plots
+
+## Scatter plot: basics
+
+- To plot `hwy` against `displ` 
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+<!-- negative relationship between engine size and fuel efficiency: cars with big engines use more fuel. -->
+
+- Outliers? Could be hybrids?
+
+## Scatter plot: adding another variable
+
+- Add a third variable to a 2d scatterplot by mapping it to an _aesthetic_
+- Aesthetic: visual property of the objects in the plot 
+- To map an aesthetic to a variable, associate the name of the aesthetic to the name of the variable inside `aes()`
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+- Can try with `size`, `alpha` or `shape`
+
+## Scatter plot: general aesthetic properties
+
+- Can also set the aesthetic properties of your geom manually 
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+
+- Can specify
+
+    1. color (associated to a string)
+    1. size (associated to a size in mm)
+    1. shape (associated to a number between 0 and 20)
+    
+## Scatter plot: exercice 
+
+1. In `mpg`, identify which variables are categorical and which are continuous 
+2. Map a continuous variable to color inside `aes` 
+
+## Scatter plot: exercice 
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = cty))
+```
+
+## Scatter plot: exercice 
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = year))
+```
+
+# Facets & grids
+
+## Facets 
+
+- Can also split the plot into facets (=subplots), via `facet_wrap()`
+- First argument: formula, created with `~` followed by a variable name -- necessarily discrete (but not necessarily categorical)!
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_wrap(~ class, nrow = 2)
+``` 
+
+## Grids
+
+- Before: split with respect to one variable 
+- Can also split with two variables with `facet_grid()`
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + 
+  facet_grid(drv ~ cyl)
+```    
+<!-- cyl: cilinders, drv: cars' drivetrain 
+4 stands for four-wheel drive, f for front-wheel drive, and r for rear-wheel drive.-->
+
+# Geometerical objects
+
+## Geometerical objects
+
+- `ggplot2` is only about adding layers to a plot
+- A _geom_: geometrical object used by `ggplot2` to represent data 
+- Ex: plot `hwy` against `displ`, this time using `geom_smooth` instead of `geom_point`
+
+## Geometrical objects 
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy))
+```   
+
+## Geometerical objects 
+
+- `ggplot2` is only about adding layers to a plot
+- A _geom_: geometrical object used by `ggplot2` to represent data 
+- Some mapping arguments work only for some geom (tried to shape a line?)
+- In total, about 30 geoms provided by `ggplot2`
+
+## Geometrical objects 
+
+- For some geoms (e.g. smooth), can you the _group_ aesthetic
+- Group: `ggplot2` will group the data for these geoms whenever used with a discrete variable, without adding a legend or distinguishing features
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
+```   
+
+## Multiple geoms 
+
+- Of course, can add multiple layers to the same plot
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy)) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```  
+
+## Multiple geoms 
+
+- In the previous command, some duplication of our code 
+```{r, echo = TRUE, eval = FALSE} 
+geom_point(mapping = aes(x = displ, y = hwy)) + geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+- Instead, can define a global mapping directly in `ggplot()`
+```{r, fig.align='center', echo = TRUE, eval = FALSE}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + geom_point() + geom_smooth()
+```  
+
+## Multiple geoms 
+
+- If place mappings in a geom function in addition to a global mapping, `ggplot2` will extend or overwrite the global mappings for that layer only
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth()
+```
+
+## Multiple geoms 
+
+- Can also specify data for each layer 
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+```
+
+## Geoms: exercices 
+
+```{r, include = FALSE}
+require(gridExtra)
+```
+
+- Reproduce these plots
+```{r, fig.align='center', echo = FALSE}
+p1 <- ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+        geom_point() + 
+        geom_smooth(se = FALSE)
+p2 <- ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+        geom_point(mapping = aes(color = drv)) + 
+        geom_smooth(mapping = aes(linetype = drv), se = FALSE)
+grid.arrange(p1,p2)
+```
+
+## Geoms: solutions
+
+```{r, eval = FALSE}
+# first plot
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+# second plot 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = drv)) + 
+  geom_smooth(mapping = aes(linetype = drv), se = FALSE)
+```
+
+# Statistical transformations 
+
+## Bar charts 
+
+- Based on `diamonds` dataset, with variables s.a. `price`, `carat`, `color`, `clarity`, `cut`...
+- Bar chart with `geom_bar`
+- Note: only one variable in the mapping
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut))
+```
+
+## Bar charts
+
+- On the y-axis: _counts_ the number of diamonds / category 
+- "Count" is the default `stat` associated to `geom_bar`
+
+```{r, fig.align='center', echo = TRUE}
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, y = ..prop.., group = 1))
+```
+
+- `ggplot2` provides over 20 stats (e.g. `stat_smooth` is the stat associated to `geom_smooth`)
+
+## Bar charts: exercice 
+
+- Run the cell below and understand what `geom_col` do?
+```{r, echo = TRUE, eval = FALSE}
+ggplot(data = diamonds) + geom_col(mapping = aes(x = cut, y = carat))
+```
+- Run the cell below and undestand why we need `group` 
+```{r, echo = TRUE, eval = FALSE}
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, y = ..prop..))
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, y = ..prop.., group = "x"))
+```
+
+<!-- 
+The default for geom_bar is to group by the x variable in order to separately count the number of rows in each level of the x variable. 
+If we want proportions, then we need to consider all levels of cut together. This is not the default behavior; the data are first grouped by x, so each level of x is considered separately. The proportion of x1 in x1 is 100%, as is the proportion of x2 in x2 etc.
+Group="whatever" overrides the default behavior, which is to group by the x variable. 
+-->
+
+# Position adjustments 
+
+## Bar charts (cont.)
+
+- As for scatterplot, can add another variable to a bar chart 
+```{r, echo = TRUE, eval = FALSE}
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = cut))
+ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity))
+```
+```{r, fig.align='center', echo = FALSE}
+p1 <- ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = cut))
+p2 <- ggplot(data = diamonds) + geom_bar(mapping = aes(x = cut, fill = clarity))
+grid.arrange(p1,p2)
+```
+
+## Bar charts & position adjustment 
+
+- By default, the bars are stacked 
+- The stacking is performed by the position adjustment argument, specified by `position`
+
+    1. `position = "identity"`: overlaps the bars
+    1. `position = "fill"`: works like stacking, but makes each bars the same heigh
+    1. `position = "dodge"`: places overlapping objects beside one another
+    
+## Bar charts & position adjustment 
+
+```{r, fig.align='center', echo = FALSE}
+g  <- ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity))
+p1 <-  g + geom_bar(alpha = 1/5, position = "identity")
+p2 <- ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity)) +
+  geom_bar(fill = NA, position = "identity")
+p3 <- g + geom_bar(position = "fill")
+p4 <- g + geom_bar(position = "dodge")
+grid.arrange(p1,p2,p3,p4,ncol=2)
+```
+```{r, fig.align='center', eval = FALSE, echo = TRUE}
+g  <- ggplot(data = diamonds, mapping = aes(x = cut, fill = clarity))
+g + geom_bar(alpha = 1/5, position = "identity")
+g + geom_bar(fill = NA, position = "identity")
+g + geom_bar(position = "fill")
+g + geom_bar(position = "dodge")
+```
+
+## Position adjustments: exercice 
+
+- Using `geom_boxplot`, play with the position argument. Specifically, based on the `mpg` dataframe, do a boxplot of `hwy` on `class`, differenting by `drv`. 
+
+    1. What is the default position?
+    1. Which of `fill`, `dodge` and `ìdentitiy` work?
+    
+## Position adjustments: solution 
+    
+```{r, fig.align='center', echo = FALSE}
+g <- ggplot(data = mpg, mapping = aes(x = class, y = hwy, fill = drv))
+p1 <- g + geom_boxplot()
+p2 <- g + geom_boxplot(position = "identity")
+grid.arrange(p1,p2)
+```
+```{r, fig.align='center', eval = FALSE, echo = TRUE}
+g <- ggplot(data = mpg, mapping = aes(x = class, y = hwy, fill = drv))
+g + geom_boxplot()
+g + geom_boxplot(position = "identity")
+```
+
+# Coordinate systems 
+
+## Coordinate systems
+
+- Default coordinate system is the Cartesian coordinate system 
+- Others: 
+
+    - `coord_flip()`: switches the x and y axes 
+    - `coord_polat()`: switches to polar coordinates
+    
+## Coordinate systems 
+
+```{r, fig.align='center', echo = TRUE}
+# switches x and y
+ggplot(data = mpg, mapping = aes(x = class, y = hwy)) + geom_boxplot() + coord_flip()
+```
+
+## Coordinate systems 
+
+```{r, fig.align='center', echo = TRUE}
+# polar coordinates
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = cut), show.legend = FALSE) + 
+  labs(x = NULL, y = NULL) + 
+  coord_polar()
+```
+

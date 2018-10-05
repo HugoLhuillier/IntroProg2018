@@ -1,0 +1,70 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Input / Output* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Reading `.csv`
+
+<!-- how to read data from a .csv and write to a new .csv, and explore the arguments that allow you read and write the data correctly for your needs --> 
+
+## Loading the data
+
+- `read.csv` loads `.csv` file as data frame
+```{r, echo = TRUE}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r/")
+d <- read.csv(file = "data/car-speeds.csv")     # data on car speeds and color
+str(d)
+```
+- By default, the default delimiter in `.csv` files is a comma; can specify an arbitrary delimiter via the `sep` argument in `read.csv()`
+
+## Useful arguments
+
+- `header`: by default, `TRUE` $\Rightarrow$ the first row of values in the `.csv` file is set as column names
+- `stringsAsFactors`: by default, `TRUE`
+<!-- it could be that the strings are not categorical, e.g. names. in this case, better to use FALSE since there are functions that works only on strings and not factors-->
+- `as.is`: extension of `stringsAsFactors` that gives control over individual columns
+```{r, echo = TRUE}
+d <- read.csv(file="data/car-speeds.csv", as.is = 1)
+str(d)
+```
+<!-- the first column was importer AS IT IS, while the third one ws converted into factors-->
+- `strip.white`: if the data was mis-recorded with spaces, `R` removes these 
+
+## `strip.white`: example
+
+- In our dataset, seems that `Red` has been mis-recorded sometimes 
+```{r, echo = TRUE}
+unique(d$Color)       # remember that the Color column is stored as string => cannot use levels()
+d <- read.csv(file="data/car-speeds.csv", as.is = 1, strip.white = TRUE, sep = ",")
+unique(d$Color) 
+```
+
+# Writing `.csv` file
+
+## Writing the data 
+
+- Data frame are saved in `.csv` via `write.csv`; two arguments 
+
+    1. the data frame to be saved 
+    1. the name of the file 
+    
+```{r, echo = TRUE}
+write.csv(d, file = "data/car-speeds-cleaned.csv")
+```
+
+## Useful arguments 
+ 
+- `row.names`: by default `TRUE`, the first column of the new `.csv` file will contain numbers (= # of the rows)
+- `na`: remember that `NA` is `R`-specific; can specify with which value to replace `NA` with the argument `na`
+

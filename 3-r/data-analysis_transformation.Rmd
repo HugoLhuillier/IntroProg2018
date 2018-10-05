@@ -1,0 +1,435 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Data Analysis (data transformation)* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    # in class use 
+    # css: my-style-class.css
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center', warning = F)
+```
+```{r, include = FALSE}
+require(tidyverse)
+require(nycflights13)
+require(gapminder)
+require(Lahman)
+require(gridExtra)
+require(ggthemes)
+# for class
+# theme_set(theme_dark())
+```
+
+# Remember: data visualization 
+
+## Exercice 
+
+- Based on the `chicago-nmpaps.csv` spreadsheet, reproduce this plot. For that, you will need 
+
+    1. to load the data `chicago-nmpaps.csv`
+    1. to plot together a violin plot and a boxplot 
+    1. to change the order on the y-axis so that
+    1. to add a title and labels to the x and y-axes
+
+```{r, echo = F}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r/lecture8")
+nmmaps<-read.csv("chicago-nmmaps.csv", as.is=T)
+
+ggplot(nmmaps, aes(x=season, y=o3)) + 
+  geom_violin(alpha=0.5, aes(fill = season), show.legend = F) +
+  geom_boxplot(width = 0.1, outlier.shape=NA) + 
+  scale_x_discrete(limits=c("autumn", "winter", "spring", "summer")) + 
+  coord_flip() + 
+  labs( title = "Violin plot", 
+      subtitle="Ozone density per season in Chicago",
+      y="Ozone",
+      x="Season")
+```
+
+## Solution 
+
+```{r, eval = F}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r/lecture8")
+nmmaps <-read.csv("chicago-nmmaps.csv", as.is=T)
+
+ggplot(nmmaps, aes(x=season, y=o3)) + 
+  geom_violin(alpha=0.5, aes(fill = season), show.legend = F) +
+  geom_boxplot(width = 0.1, outlier.shape=NA) + 
+  scale_x_discrete(limits=c("autumn", "winter", "spring", "summer")) + 
+  coord_flip() + 
+  labs( title = "Violin plot", 
+      subtitle="Ozone density per season in Chicago",
+      y="Ozone",
+      x="Season")
+```
+
+## Resources 
+
+- [This tutorial](http://www.sthda.com/english/wiki/be-awesome-in-ggplot2-a-practical-guide-to-be-highly-effective-r-software-and-data-visualization) 
+- [This cheat seet](https://www.rstudio.com/wp-content/uploads/2015/03/ggplot2-cheatsheet.pdf)
+- [Thematic maps with ggplot2](https://timogrossenbacher.ch/2016/12/beautiful-thematic-maps-with-ggplot2-only/)
+
+# Data Transformation with `dplyr` 
+
+## Introduction to `dplyr`
+
+- All the data we used in the previous lecture were extremely well shaped 
+```{r}
+mpg
+```
+- In this section: learn how to group, filter, summarize, create variables etc., with the `dyplr` package
+    
+## Why bother? 
+
+- Without the proper tools, data analysis is: 5% analysis, 95% cleaning and re-organizing data 
+- With the proper tools, can bring the ratio to a solid 40-60
+
+<center>
+![tidy data](tidy-data.png)
+![tidy data](data-org-spreadsheet.png)
+</center>
+- `dyplr` provides functions that are much more efficient and intuitive than the base R ones
+
+
+## Getting started 
+
+- Explore the basics of data manipulation witht the `nycflights13` data set
+```{r, eval = F}
+library(tidyverse)
+library(nycflights13)
+```
+```{r}
+flights
+```
+- `tibbles` are data frames tweaked to work better in the tidyverse enviromnent 
+- To view the entire data set, `View(flights)`
+
+## `tibbles` vs. `data.frames`: raw introduction 
+
+- `tibbles` do not print the entire table when called in the console 
+- `tibbles` automatically prints info on the data types contained
+
+```{r}
+head(flights)
+head(nmmaps)
+```
+
+## `tibbles` data types 
+
+- `int`: integers
+- `dbl`: real numbers 
+- `chr`: characters & strings
+- `dttm`: data-times (date + time)
+- `lgl`: logical
+- `fctr`: factors
+- `date`: dates
+
+## `dplyr`: the 6 key functions 
+
+- In this section, we'll learn how to:
+
+    1. pick observations based on their values (`filter()`)
+    1. reorder the rows (`arrange()`)
+    1. pick variables by their names (`select()`)
+    1. create new variables with functions of existing variables (`mutate()`)
+    1. collapse many values down to a single summary (`summarize()`)
+    
+- Can be used in conjunction wtih `group_by()` to operate only on a subset of the data set
+
+## `dyplyr`: template 
+
+```{r, eval = F} 
+new_data <- <dyplr_function>(<raw_data>, <names_of_the_variables_to_work_with>...)
+```
+
+# Filter
+
+## Filter rows with `filter()`
+
+- `filter()`: subset observations based on their values
+- Uses logicals to select the observations, and returns a new `tibble` (i.e., no modification in place)
+```{r}
+# select all flights on January 1st
+filter(flights, month == 1, day == 1)
+```
+
+## `filter()` & logicals 
+
+- By default, conditionl arguments are combined with $\cap$ within `filter`
+- If want to use $\cup$ or more complicated structure, hardcode it 
+```{r}
+filter(flights, month == 11, month == 12)
+# flights that departed in November or December! 
+filter(flights, month == 11 | month == 12)
+```
+
+## `filter()` & variables 
+
+- In the previous example, had to restate twice `month`: `month == 11 | month == 12` 
+- Shortcut: `%in%` command 
+```{r,}
+# equivalent to month %in% c(10,11,12)
+filter(flights, month %in% 10:12)
+```
+
+## `filter()` & `NA`
+
+- Remember: `NA` = missing value
+- `NA` are very contagious 
+```{r}
+NA + 10
+NA > 1
+```
+- By default, `filter()` only excludes the condition if `TRUE` (i.e., excludes the rows whenever you have a `NA`)
+- To preserve missing values, need to ask for them explicitly
+```{r, eval = F}
+filter(flights, is.na(x) | (month == 1 & day == 1))
+```
+
+## Exercice 
+
+- Plot the density of arrival delay for the flights operated by United (`UA`), American (`AA`) or Delta (`DL`)
+- See that ugly right tail? Remove it by plotting only the flights operated by United (`UA`), American (`AA`) or Delta (`DL`) with arrival delays smaller than its 99th percentile (look up the `quantile()` function)
+
+## Solution
+
+```{r, eval = F}
+# take only the data for the three companies
+flights_comp <- filter(flights, carrier %in% c("UA","AA","DL"))
+ggplot(flights_comp) + 
+  geom_density(aes(x = arr_delay, fill = carrier), color = "black", alpha = 0.4)
+# consider only the data for arrival delays < 99th percentile
+flights_comp_99 <- filter(flights_comp, arr_delay <= quantile(flights_comp$arr_delay, 0.99, na.rm = T))
+ggplot(flights_comp_99) + 
+  geom_density(aes(x = arr_delay, fill = carrier), color = "black", alpha = 0.4)
+```
+```{r,echo=F}
+flights_comp <- filter(flights, carrier %in% c("UA","AA","DL"))
+p1 <- ggplot(flights_comp) + geom_density(aes(x = arr_delay, fill = carrier), color = "black", alpha = 0.4)
+flights_comp_99 <- filter(flights_comp, arr_delay <= quantile(flights_comp$arr_delay, 0.99, na.rm = T))
+p2 <- ggplot(flights_comp_99) + geom_density(aes(x = arr_delay, fill = carrier), color = "black", alpha = 0.4)
+grid.arrange(p1,p2)
+```
+
+# Arrange rows
+
+## Arrange rows with arrange 
+
+- `arrange()` change the order of the **rows**
+- Can order by one or multiple columns (then the order matters!)
+- By default: ascending orders. Use `desc()` to reorder in descending order 
+```{r, echo = TRUE}
+# arrange the data by year, then month, then day
+arrange(flights, year, month, day)
+# arrange(flights, year, month, day) different from arrange(flights, year, day, month)
+```
+- Missing values are always sorted at the end
+
+## Order & `top_n`
+
+- `top_n` uses `arrange()` to select the top `n` rows after ordering the data 
+- **careful**: `top_n` orders in descending order, and can order only by **one** column
+```{r}
+# flight(s) that traveled the longest
+top_n(flights, 1, air_time)
+# most delayed flight(s)
+top_n(flights, 1, arr_delay)
+```
+
+# Select columns 
+
+## Selecting columns with `select()`
+
+- `select`: zoom in on a subset of variables in the dataset 
+```{r}
+select(flights, year, month, day)
+```
+```{r, eval = F}
+# select all columns execpt those in between year and day
+select(flights, -(year:day))
+```
+
+## `select()` and helper functions 
+
+- `starts_with("abc")`: select columns with names that begin with "abc"
+- `ends_with("abc")`: select columns with names that end with "abc"
+- `contains("ijk")`: select columns with names containing "ijk"
+- `everything()`: select all the columns to the right of the pointer
+```{r, eval = F}
+select(flights, everything())      # = flights 
+select(flights, day, everything()) # exclude year and month from the data frame
+```
+- Closely related to `select`: `rename` (**careful** about the order)
+```{r, eval = F}
+rename(<data>, <new_var_name> = <current_var_name>)
+```
+
+# Add new variables 
+
+## Adding new variables with `mutate()`
+
+- `mutate()` adds new columns at the end of the dataset 
+```{r}
+# first subsetting so that we can see all the variables 
+flights_small <- select(flights, year:day, ends_with("delay"), distance, air_time)
+mutate(flights_small, 
+       gain = arr_delay - dep_delay, 
+       speed = distance / air_time * 60)
+```
+- To keep only the newly created variables, use `transmute()`
+
+## `mutate()` and creation functions 
+
+- `mutate()` can be used in conjuction with several `R` functions 
+- _Only restriction_: the functions needs to be vectorized
+
+## `mutate()` and creating functions 
+
+- Some useful functions:
+
+    - `*` (`/`): scalar & entrywise multiplication (division)
+    - `lead()` and `lag()`: leading or lagging values
+    - Cumulative functions: `cumsum()`, `cumprod()`, `cummin()`, `cummax()`, `cummean()`
+    - Ranking: `min_rank()` - gives the smallest values the smallest ranks
+```{r}
+x <- 1:10; y <- c(1, 2, 2, 3, 3, 4)
+lag(x)
+cummean(x)
+min_rank(y)
+```
+
+## Exercice
+
+- Focusing on the flights carried by United (`UA`) in January, compute the rank of each flight with respect to how delayed it was at the arrival
+- Plot the rank against the delay
+- How do you explain this shape? To answer, look at the density of arrival delay
+  
+## Solution 
+
+```{r}
+# subset the observation wanted
+flights_smpl <- filter(flights, carrier == "UA", year == 2013, month == 1)
+# create the new variable
+flights_smpl <- mutate(flights_smpl, arr_delay_rank = min_rank(arr_delay))
+```
+```{r, eval = F}
+ggplot(data = flights_smpl) + 
+  geom_point(aes(x = arr_delay_rank, y = arr_delay))
+ggplot(data = flights_smpl) +
+  geom_histogram(aes(x = arr_delay), fill = "tomato3", color = "black")
+```
+```{r, echo = F}
+p1 <- ggplot(data = flights_smpl) + 
+  geom_point(aes(x = arr_delay_rank, y = arr_delay))
+p2 <- ggplot(data = flights_smpl) + 
+  geom_histogram(aes(x = arr_delay), fill = "tomato3", color = "black")
+grid.arrange(p1,p2)
+```
+
+# Summary statistics 
+
+## `summarize()` and `group_by()`
+
+- `summarize()` collapses a data frame to a single row
+```{r}
+# creates a new tibble with two columns: delay_m and delay_sd
+summarize(flights, delay_m = mean(dep_delay, na.rm = T), delay_sd = sd(dep_delay, na.rm = T))
+```
+- `group_by()`: changes the unit of analysis from the complete dataset to individual groups
+```{r}
+# creates a new tibble that gives the mean and sd by month
+by_month <- group_by(flights, year, month)
+summarize(by_month, delay_m = mean(dep_delay, na.rm = T), delay_sd = sd(dep_delay, na.rm = T))
+```
+
+# Combining multiple operations
+
+## Motivation
+
+- Suppose we want to explore the relationship between the distance and average delay for each location. Need to 
+
+    1. count the number of flights going to this location (_always good practice to count the number of observation per group_)
+    1. compute the average distance 
+    1. compute the average delay
+    1. subset the data to focus on the location with more than 20 observations & exclude Hawai
+    
+```{r}
+# distinguish the different location
+by_dest <- group_by(flights, dest)
+# step 1, 2, 3
+delay   <- summarize(by_dest, count = n(),
+                              dist  = mean(distance, na.rm = T),
+                              delay = mean(arr_delay, na.rm = T))
+# step 4
+delay   <- filter(delay, count > 20, dest != "HNL")
+```
+
+## Motivation
+
+```{r}
+ggplot(data = delay, mapping = aes(x = dist, y = delay)) +
+  geom_point(aes(size = count), alpha = 1/3) +
+  geom_smooth(se = FALSE, color = "tomato3")
+```
+
+## Pipe: the life saver 
+
+- In the code above, lots of unnecessary intermediary steps
+```{r}
+delays <- flights        %>%
+          group_by(dest) %>%
+          summarize(count = n(), dist = mean(distance, na.rm = T), delay = mean(arr_delay, na.rm = T)) %>%
+          filter(count > 20, dest != "HNL")
+```
+- `%>%`: pipe instruction, that can be read as "then"
+
+## Your turn 
+
+- Using the Lahman package that contains data on every major league baseball player, plot the skill of the batter (measured by the batting average) against the number of opportunities to hit the ball. You need:
+
+    1. load the package 
+    1. transform it into a tibble (help provided below)
+    1. compute, by player (identified by `playerID`), their batting average (i.e., the number of time they hit the ball, `H`, divided by the number of time they tried, `AB`), and the number of opportunities they had (again, `AB`)
+    1. plot the result 
+    1. explain the result, and why there might be an endogeneity issue
+    
+```{r, eval = F} 
+# to transform the data in a tibble, run 
+batting <- as_tibble(Lahman::Batting)
+```
+
+## Solution
+
+```{r}
+# require(Lahman) 
+batting <- as_tibble(Lahman::Batting) 
+# create a data frame with the aggregated observation
+batters <- batting            %>% 
+           group_by(playerID) %>%
+           summarize(ba = sum(H, na.rm = T) / sum(AB, na.rm = T), 
+                     ab = sum(AB, na.rm = T)) %>% 
+           filter(ab > 100)
+# plot the result 
+ggplot(batters, mapping = aes(x = ab, y = ba)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(color = "tomato3",se = FALSE)
+```
+
+<!-- 
+two forces that explain the shape of the fit:
+1. (+) coach sends on the pitch the best batters => the best batters play more
+1. (-) the more you play, the lower the variance
+-->
+
+  
+
+
+
+

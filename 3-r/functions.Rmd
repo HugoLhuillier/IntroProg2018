@@ -1,0 +1,513 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Functions* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+
+```{r setup, cache = F, echo = FALSE}
+knitr::opts_chunk$set(error = TRUE)
+```
+
+## BLRs: the comeback 
+
+- Remember: try to make your code as re-usable as possible 
+- One of the key: using functions 
+- Can also make your code faster
+
+# Defining functions
+
+## Defining a function 
+
+- Suppose we want to transform Fahrenheit to Kelvin, 
+$$
+  K(f) = (f - 32) \times \frac{5}{9} + 273.15
+$$
+- In `R`
+```{r, echo = TRUE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+# calculate what 50°K is in F° 
+fahr_to_kelvin(50)
+```
+- Similarly to convert from Kelvin to Celcius
+$$
+  C^1(k) = k - 273.15
+$$
+```{r, echo = TRUE}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+```
+
+<!-- 
+1. Assign fahr_to_celcius to the output of function
+2. The list of argument names are contained within parentheses
+3. The body of the function - what's happening when we run the function  is contained within {}
+4.return() is a function, and it determines what the output of the funtion is
+-->
+
+## Functions: basic principle
+
+- Should always try to keep functions relatively **small**
+- In particular: should try to combine function as much as possible! (in the sense of $f \circ g$) 
+- **Exercice**: create a function that converts the temperature from Fahrenheit to Celsius, given 
+$$
+  C^2(f) = (f - 32) \times \frac{5}{9}
+$$
+- Remember the two functions we created before:
+$$
+K(f) = (f - 32) \times \frac{5}{9} + 273.15, \\
+C^1(k) = k - 273.15
+$$
+
+## Functions: solution
+
+- Could retype the maths (**bad practise**)
+- Instead: $C^2(f) = C^1(K(f))$ 
+```{r, echo = TRUE}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+```
+
+# Functions and the call stack 
+## The call stack
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+```
+</div>
+<div class="column-left"> 
+- What's happening when we are running 
+```{r, eval = FALSE}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-01.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-02.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-03.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-04.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-05.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-06.png">
+</div>
+
+## The call stack 
+
+<div class="column-right">
+- Remember 
+```{r, eval = FALSE}
+fahr_to_kelvin <- function(f) {
+  k <- (f - 32) * (5 / 9) + 273.15
+  return(k)
+}
+kelvin_to_celcius <- function(k) { 
+  c <- k - 273.15
+  return(c)
+}
+fahr_to_celcius <- function(f) { 
+  k <- fahr_to_kelvin(f)
+  c <- kelvin_to_celcius(k)
+  return(c)
+}
+fahrenheit <- 32 
+celcius    <- fahr_to_celcius(fahrenheit)
+```
+</div>
+<div class="column-left"> 
+  <img class="col" src="fig/call-stack-07.png">
+</div>
+
+## The call stack: summary 
+
+<!-- 
+Description:
+1. When we call fahr_to_celsius, R creates first a stack frame to keep track of the variables defined by fahr_to_kelvin 
+1. When we call fahr_to_kelvin inside fahr_to_celsius, R creates another stack frame to hold fahr_to_kelvin’s variables
+1. It does this because there are now two variables with the same name: the argument to fahr_to_celsius, and the argument to fahr_to_kelvin. Having two variables with the same name in the same part of the program would be ambiguous <=> R creates a new stack frame for each function call to keep that function’s variables separate from those defined by other functions
+1. When the call to fahr_to_kelvin returns a value, R throws away fahr_to_kelvin’s stack frame and creates a new variable in the stack frame for fahr_to_celsius to hold the temperature in Kelvin
+1. etc.
+1. Finally, when fahr_to_celsius is done, R throws away its stack frame and puts its result in a new variable
+
+- This final stack frame is always there; it holds the variables we defined outside the functions in our code. What it doesn’t hold is the variables that were in the various stack frames. If we try to get the value of temp after our functions have finished running, R tells us that there’s no such thing:
+-->
+
+- A stack frame: a data structure that provides storage for a function’s local variables  
+- Why need a stack frame? If were not there, the calculation within `fahr_to_kelvin` would affect variables outside the function (if share the same name)
+
+# Small exercice
+
+## Exercice #1 
+
+- Using the base function `c` and `rep`, write a function that takes three arguments, say $x$, $y$, and $n$, and returns a new vector with $x$ at the beginning and at the end, and $n$ times $y$ in the middle 
+
+## Solution 
+
+```{r, echo = TRUE}
+repeater <- function(x, y, n) { 
+  return(c(x, rep(y, times = n), x))
+}
+repeater("yo","dawg",5)
+```
+
+# Testing and documenting: keys to the BLRs 
+
+## Testing: so painful, so useful
+
+```{r, echo = FALSE}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r/")
+```
+
+- As soon as working with functions, need to ensure that those are working correctly 
+- Create a function that centers a dataset around a particular value, and test it on our data set
+```{r, echo = TRUE}
+center <- function(data, new_mean) { 
+  new_data <- (data - mean(data)) + new_mean 
+  return(new_data)
+}
+d        <- read.csv(file = "data/inflammation-01.csv", header = FALSE)
+centered <- center(d[, 4], 0)
+```
+
+## Testing: so painful, so useful
+
+- How to test the function `centered`? 
+
+    >- standard deviation should not be affected
+    >- linear transformation 
+
+## Testing: so painful, so useful
+
+- How to test the function `centered`?
+
+    - standard deviation should not be affected
+    - linear transformation 
+    
+```{r, echo = TRUE}
+sd(d[, 4])
+sd(centered)
+```
+
+## Testing with the `testthat` package
+
+- `testthat` renders testing less painful
+```{r, eval = FALSE}
+install.packages("testthat")
+```
+```{r, echo = TRUE}
+require("testthat")
+# define our tests 
+test_that("Testing the function centered", {
+  expect_true( sd(d[, 4])     == sd(centered),               "equal sd")
+  expect_true( min(centered)  == min(d[,4 ]) - mean(d[,4 ]), "min difference")
+  expect_true( max(centered)  == max(d[,4 ]) - mean(d[,4 ]), "max difference")
+  expect_true( mean(centered) == 0,                          "mean difference")
+})  
+```
+- Be aware of potential numerical approximations (see `all.equal(x,y)`)
+
+## Documenting
+
+- Documentation is useful for you, and for others 
+```{r, eval = FALSE}
+center <- function(data, desired) { 
+  # return a new vector containing the original data centered around the desired value.
+  # example: center(c(1, 2, 3), 0) => c(-1, 0, 1)
+  new_data <- (data - mean(data)) + desired 
+  return(new_data)
+}
+```
+
+# Small exercice
+
+## Exercice #2
+
+- Write a function that takes as argument a filename and plot the `average`, the `min` and the `max` inflammation over time (as in the previous lecture)
+- Do not forget to document your function 
+
+## Exercice #2: solution
+
+```{r, eval = TRUE}
+analyze <- function(filename) {
+  # plots the average, min, and max inflammation over time
+  # input is character string of a csv file
+  # example: analyze("data/inflammation-03.csv")
+  d <- read.csv(file = filename, header = FALSE)
+  plot(apply(d, 2, mean))
+  plot(apply(d, 2, max))
+  plot(apply(d, 2, min)) 
+}
+```
+
+# Default arguments 
+
+## Defaults arguments
+
+- Remember the `read.csv` function?
+```{r, echo = TRUE}
+d <- read.csv("data/inflammation-01.csv", header = FALSE)
+d <- read.csv("data/inflammation-01.csv", FALSE)
+d <- read.csv(header = FALSE, file = "data/inflammation-01.csv")
+d <- read.csv(FALSE, "data/inflammation-01.csv")
+```
+
+## Matching arguments 
+
+- R matches the arguments supplied to the function's arguments in three ways (and in order)
+
+    1. by complete name 
+    1. by partial name (initial $n$ characters)
+    1. by position
+    
+- Therefore
+
+    - arguments' name provided: no problem 
+    - arguments in the correct order: no problem 
+    - no name and wrong order: function fails
+
+- To be sure of the order, check the `help`
+
+## Exercice #3: defining defaults
+
+- **Ex**: re-define the `center` function such that the default centering is around `0`
+
+## Exercice #3: solution
+
+- **Ex**: re-define the `center` function such that the default centering is around `0`
+```{r, eval = TRUE}
+center <- function(data, desired = 0) { 
+  # return a new vector containing the original data centered around the desired value (default = 0)
+  # example: center(c(1, 2, 3), 0) => c(-1, 0, 1)
+  new_data <- (data - mean(data)) + desired 
+  return(new_data)
+}
+```
+```{r, echo = FALSE}
+d <- read.csv(header = FALSE, file = "data/inflammation-01.csv")
+```
+```{r, echo = TRUE}
+head( center(d[,4]) )
+head( center(d[,4], 0) )
+head( center(desired = 0, d[,4]) )
+```
+
+
+# Warnings & Errors
+## Warnings
+
+- When designing functions, want to be as indicative as possible one what the function is doing
+```{r, echo = TRUE}
+x = c(1,2,3); m = matrix(c(1,2,3,4,5,6),nrow=3,ncol=2)
+center(x)
+center(m)
+e <- center(d)
+```
+- Would be great to inform the user about this behavior
+
+## Warnings
+
+- The `warning` function allows you to send warning to the user
+```{r, echo = TRUE}
+center <- function(data, desired = 0) { 
+  if (class(data) != "numeric" && dim(data)[2] > 1) {
+    warning("the centering occurs around the mean of the entire matrix")
+  }
+  new_data <- (data - mean(data)) + desired 
+  return(new_data)
+}
+center(m)
+```
+
+## Errors 
+
+- The `stop` function allows you to stop the execution of the function, and returns an error message instead 
+```{r, echo = TRUE}
+center <- function(data, desired = 0) { 
+  if (class(data) == "data.frame") { 
+    stop("cannot take the mean of a data.frame, therefore cannot center the data")
+  }
+  if (class(data) != "numeric" & dim(data)[2] > 1) {
+    warning("the centering occurs around the mean of the entire matrix")
+  }
+  new_data <- (data - mean(data)) + desired 
+  return(new_data)
+}
+center(d)
+```
+- You can also have a look at the `tryCatch` function
+

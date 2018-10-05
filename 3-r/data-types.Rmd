@@ -1,0 +1,369 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Data types* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+```{r setup, cache = F, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(error = TRUE)
+```
+
+# Object-oriented programming language in a nutshell
+
+## Looks complicated, but `err`
+
+- OOP: programming methodology based on objects, instead of just functions
+- Oject: pretty much anything and everything
+- Classes: a category of objects; defines the common properties of the objects that belong to this class 
+- An object: an instance of a class $\Rightarrow$ different objects from an identical class have similar structure, but can be assigned individual characteristics 
+- Can create relationships between objects (e.g. can inherit properties from one another etc.)
+- Can create functions that apply only on some objects
+
+## OOP: an example 
+
+- Let's `Human` be a class, with three characteristics 
+```{YAML, eval = FALSE}
+Human: 
+  - Name        # will have to be a string
+  - Age         # will have to be a numeric
+  - Address     # would be nice to have a common structure for addresses
+```
+- Let's `Address` be another class 
+```{YAML, eval = FALSE}
+Address: 
+  - Number       # will have to be a numeric
+  - Street       # will have to be a string
+  - City         # will have to be a string
+```
+- Then, create my own address and human (two objects)
+```{julia, eval = FALSE}
+fredo-address = Address("27", "rue Saint-Guillaume", "Paris")
+fredo-mion    = Human("Frédéric Mion", 49, fredo-address)
+```
+- And could also define functions
+```{julia, eval = FALSE}
+function where-i-live(address)
+  "address.numer, address.street, address.city"
+
+function presentation(human)
+  "Hello, I am human.name. I am human.age, and I live where-i-live(human.address)"
+```
+
+<!-- 
+  1. name, age and address are all attributes of the class Human (and the corresponding objects created from this class) 
+  1. we have nested the Address class inside the Human class
+  1. fredo-address and fredo-mion are repsecitvely two objects, instances of Human and Address. These are created by "constructors"
+  1. the function where-i-live applies only on Address objects, and presentation on Humans. if were to put human inside where-i-live, would not work (would not make any sense right?)
+-->
+
+## Useful? 
+
+- OOP languages are more flexible and allows you to write code that is extremely reusable
+- **Example**: two functions can have the same names, but apply on different objects, and therefore produce different output
+```{r, fig.align='center', echo = TRUE}
+x <- 1:10
+plot(x)
+```
+
+## Useful? 
+
+- **Example**: two functions can have the same names, but apply on different objects, and therefore produce different output
+```{r, fig.align='center', echo = TRUE, warning = FALSE}
+x   <- runif(100); y <- 3 * x + rnorm(100)
+reg <- lm(y ~ x + y)
+par(mfrow=c(2,2))
+plot(reg)
+```
+```{r, include = FALSE} 
+par(mfrow=c(1,1))
+```
+
+# R and OOP
+
+## `R`'s raw classes 
+
+- `R` has 6 raw classes
+
+    - `character`: `"a"` and `"abc"`
+    - `numeric` : `1` and `1.5`
+    - `integer`: `1L`
+    - `logical`: `TRUE`
+    - `complex`: `1.4i`
+    
+- In `R`, **everything** is an object 
+```{r, echo = TRUE}
+x <- 2.0
+```
+- `x`: instance of the numeric class, with zero attribute
+ 
+## `R` raw classes 
+
+- `R` has several functions to examine what objects we are dealing with
+
+    - `class()` and `typeof()`: what kind of object is it
+    - `length()`: how long is it
+    - `attributes()`: what are its attributes
+    
+```{r, echo = TRUE}
+x <- 1:10
+typeof(x)
+length(x)
+attributes(x)
+```
+
+# `R`'s data type 
+
+## `R`'s special values 
+
+- `R` contains certain objects that makes life of data scientist easier
+
+    - `NA`: missing value - can be incorporated in any vector, regardless of the data the latter contains 
+    - `Inf`: infinity
+    - `NaN`: not a number, i.e. an undefined value 
+    
+```{r, echo = TRUE}
+x <- c(1, NA)
+```
+```{r, echo = TRUE}
+1 / 0
+0 / 0
+```
+
+## Data structures 
+
+- Data structures are other classes that groups together `R`'s raw classes
+
+    - atomic vector 
+    - list 
+    - matrix 
+    - data frame
+    - factors
+    
+## Atomic vectors 
+
+- Vectors are the most basic structures in `R`
+- A vector is a collection of elements, that can be `character`, `logical`, `integer` etc.
+```{r, echo = TRUE}
+vector()                        # create an empty logical (by default) vector
+logical(0)                      # id. to the above constructor
+vector("numeric", length = 5)   # create a numeric vector of length 5 
+numeric(5)                      # id. to the above constructor
+```
+<!-- remember the Human and Address constructors above? Exactly id. here-->
+- Alternatively, can directly create a vector with its content, and `R` will guess the appropriate mode of storage 
+```{r, echo = TRUE}
+x <- c(1.0, 2.0, 3.0)
+x <- c(x, 4.0)          # and can combine vectors via the function c() 
+```
+
+## Note: `R`'s coercion 
+
+- Remember: `R` is an interpreted languages
+```{r, echo = TRUE}
+x <- c(1.0, 2.0)
+x <- c("a", "b")
+```
+<!-- therefore do not have to precise what types of data the variable x will store, and R can convert the variable R to a different mode of storage -->
+- "Coercion": conversion between the different modes of storage
+- Above = implicit coercion, and below explicit coercion 
+```{r, echo = TRUE}
+x <- 1:10
+typeof(x)
+y <- as.numeric(x)
+typeof(y)
+z <- as.character(y)
+typeof(z)
+```
+
+## Matrix 
+
+- Matrix: extension of vectors $\Leftrightarrow$ an atomic vector with dimensions
+- Created via the constructor `matrix`
+- Matrix are filled column-wise by default, but can change this by setting `byrow = TRUE`
+```{r, echo = TRUE}
+x <- matrix(1:10, ncol = 5, nrow = 2); print(x)
+x <- matrix(1:10, ncol = 5, nrow = 2, byrow = TRUE); print(x)
+dim(x)                               
+```
+-  Note: if apply `dim()` to an object that isn't a matrix, returns `NULL`
+
+## Matrix 
+
+- Can also create matrices by combining rows and/or columns via `cbind` and `rbind`
+```{r, echo = TRUE}
+x <- 1:3; y <- 10:12 
+cbind(x,y)
+rbind(x,y)
+```
+- **Question**: what happens if one vector is longer than another?
+
+## List 
+
+- Lists (aka generic vector)
+- Unlike atomic vector, not restricted to a single to a single data type
+- As you guessed, create list via the corresponding constructor `list` 
+```{r, echo = TRUE}
+x <- list(1, "a", TRUE, c(1, 2, 3)); print(x)
+```
+- The elements in a list are retrieved by using doubel square brackets
+```{r, echo = TRUE}
+x[[4]]
+```
+
+## List 
+
+- Elements of list can be named 
+```{r, echo = TRUE}
+x <- list(a = "Fredo", b = "Mion", c = matrix(1:16, nrow = 4, ncol = 4)); print(x)
+names(x)
+attributes(x) 
+```
+<!-- here an object with attributes! -->
+- When named, `x[[3]] == x$c`
+
+<!-- Lists can be extremely useful inside functions. Because the functions in R are able to return only a single object, you can “staple” together lots of different kinds of results into a single object that a function can return. -->
+
+## List: exercice 
+
+> - What's the class of `x[[3]]`?
+>- A matrix! 
+>- What's the class of `x <- c("a", 1.0)`?
+>- A vector of character! `1.0` $\Rightarrow$ `"1.0"`. Atomic vectors can only contains one type of class; `R`picks the class that can accomodate both types
+>- What's the class of `x <- c(TRUE, 1.0)`?
+>- A vector of numeric, with `TRUE` $\Rightarrow$ `1.0`
+>- let `x = list(TRUE, 1.0)`. What's the type of `x[[1]]`?
+>- A logical
+>- **Careful**: sometimes, coercion is not feasible
+
+## Data Frame
+
+- How do we create data frame? `data.frame` clearly
+```{r, echo = TRUE} 
+x <- data.frame(id = 1:10, income = runif(10))
+```
+- Note: data frames are special lists $\Rightarrow$ same attributes and functions + new ones (e.g. `str`)
+```{r, echo = TRUE}
+attributes(x)           # names' one of its attributes, along others
+x$id                    # = x[["id"]]
+str(x)                  # able to store multiple data class 
+```
+<!-- str() is an instance of another function that is defined only on some object -->
+
+## Summary of data structures
+
+| Dimension | Homogenous class |    Heterogeneous class  |
+|:---------:|:----------------:|:-----------------------:|
+|     1d    |   Atomic vector  | List (= generic vector) |
+|     2d    |      Matrix      |      Data frame         |
+
+## Factors
+
+- Factors = categorical variables in econometrics terms
+<!-- remember that factors are a certain data structure, not a raw class!-->
+- Factors are **stored as integers**, and have labels associated with these unique integers 
+- Factors can only contain pre-defined values = _levels_ 
+
+## Factors 
+
+- Below is a factor with 3 levels
+```{r, echo = TRUE}
+x <- factor(c("low","high","medium","medium","high","low"))
+```
+- Levels are created by default in alphabetical order: 
+
+    1. = "high"
+    2. = "low"
+    3. = "medium"
+
+```{r, echo = TRUE}
+levels(x)  # prints the levels, in order
+nlevels(x) # check the number of levels
+```
+
+## Factors
+
+- Can define the order of the factors
+```{r, echo = TRUE}
+x <- factor(c("low","high","medium","medium","high","low"), 
+            levels = c("low","medium","high"))
+levels(x)
+```
+- Can order the levels as numericals
+```{r, echo = TRUE}
+min(x) 
+x <- factor(c("low","high","medium","medium","high","low"), 
+            levels = c("low","medium","high"), ordered = TRUE)
+min(x)
+```
+
+## Converting factors
+
+- **Careful** whe converting factors to numeric
+```{r, echo = TRUE}
+x <- factor(c(1.2,3.5,5))
+as.numeric(x)
+```
+<!-- ask why? has to do with the fact that the content of factors are stored as integers, regardless what they are-->
+- Reason: factors are ultimately stored as integers
+- Workaround
+```{r, echo = TRUE}
+as.numeric(levels(x))
+```
+
+## Usefulness of factors
+
+<!-- To understand how useful factors are for data analysis, let's load one of our data set -->
+```{r, include = FALSE}
+setwd("/Users/hugolhuillier/Dropbox/Teaching/intro-prog/2017-2018/4-8-r")
+```
+- By default strings are stored as factor
+```{r, echo = TRUE}
+# DO NOT FORGET TO BE IN THE CORRECT DIRECTORY WITH setwd()
+d <- read.csv(file = "data/sample.csv")
+str(d)
+```
+
+## Usefulness of factors
+
+- Factors are treated differently than numbers and strings by many functions
+```{r, echo = TRUE}
+summary(d) # for factors, counts the occurence of each level
+```
+
+## Factors: exercice #1 
+
+- The function `table()` tabulates observation and can be used to create bar plots
+- **Example**
+```{r, echo = TRUE, fig.align='center'}
+barplot(table(d$Group))
+```
+- **Exercice**: use `factor()` to modify the order and plot the control group last
+
+## Factors: solution 
+
+```{r, echo = TRUE, fig.align='center'}
+# use the indexing [-1] to remove the first element of levels(d$Group), then combine via c() 
+# identical to levels = c("Control", "Treatment1", "Treatment2")
+d$Group <- factor(d$Group, levels = c(levels(d$Group)[-1], levels(d$Group)[1]))
+barplot(table(d$Group))
+```
+
+## Working with factors 
+
+- Clearly the gender entry has been coded with errors: 
+```{r, echo = TRUE}
+table(d$Gender)
+```
+- `F` and `M` should have been recorded as `f` and `m`
+```{r, echo = TRUE}
+levels(d$Gender)[2] <- "f"
+levels(d$Gender)[3] <- "m" # careful, [3] not [4]! 
+table(d$Gender)
+```

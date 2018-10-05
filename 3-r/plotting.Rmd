@@ -1,0 +1,371 @@
+---
+title: "Introduction to Programming"
+subtitle: "<h3> *R: Plotting* </h3>"
+author: Hugo Lhuillier
+date: Master in Economics, Sciences Po
+output: 
+  revealjs::revealjs_presentation:
+    center: true 
+    highlight: pygments
+    css: my-style.css
+    transition: slide
+---
+```{r setup, cache = F, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+require("ggpubr")
+```
+
+## Basic plot vs. `ggplot2`
+
+- `R`'s one of the best programming language for data science, partly due to its plotting capacity
+- For quick exploration of data, use base `R`
+- To produce publication ready plots, use `ggplot2` - more flexible / plots are easier to customize
+```{r, warning = FALSE, cache = FALSE}
+require("ggplot2")
+require("gcookbook")
+```
+- Disclaimer: mostly drawn from "R Graphics Cookbook" by Winston Chang
+
+
+# Bar charts
+
+## Basics
+
+- Used to display numeric values (y-axis) for different categories (x-axis)
+- The y-axis could represent counts (= discrete histogram), or the variable's values
+```{r, echo = TRUE, fig.align='center'}
+ggplot(pg_mean, aes(x=group, y=weight)) + geom_bar(stat="identity")
+```
+
+<!-- 
+plot is made of a sum of two functions
+
+1. what to plot
+arguments in ggplot()
+  1. the data set; pg_mean is a data frame 
+  1. aes() specifies the axis; here, group and weight are two columns from the data set we supplied earlier. pour etre precis, group is a factor, with three values, and three weight associated 
+
+1. how to be plotted 
+want a bar chart; will see stat = "identity" later on
+
+NOTE: here, here y-axis = the value, not count
+-->
+
+## Discrete vs. continuous $x$-axis
+
+- If the variable plotted on the $x$-axis is continuous, behaves differently  
+- Can transform the data via `factor()`
+```{r, eval = FALSE}
+ggplot(BOD, aes(x=Time, y=demand)) + geom_bar(stat="identity")
+ggplot(BOD, aes(x=factor(Time), y=demand)) + geom_bar(stat="identity")
+```
+```{r, echo= FALSE, fig.align='center'}
+x <- ggplot(BOD, aes(x=Time, y=demand)) + geom_bar(stat="identity")
+y <- ggplot(BOD, aes(x=factor(Time), y=demand)) + geom_bar(stat="identity")
+ggarrange(x, y, nrow = 1, ncol = 2, labels = c("continuous","discrete"))
+```
+
+<!-- in the data frame BOD, time is clealry a continuous variable. precisely, goes from 1 to 7. 
+When x is continuous, instead of having one bar at each actual x value, there is one bar at each possible x value between the minimum and the maximum => hence the 6 even though there's no data for t = 6. t = 6 is dropped when using the x-axis as categorical
+
+when dealing with factors, can do all the things that we learned (remove some factors, re-order them etc.)
+-->
+
+## Multi-dimensional bar charts 
+
+- Possibility to add a third variable
+```{r, echo = TRUE}
+str(cabbage_exp)
+```
+<!-- (e.g. low income, medium income, and high income, by gender for instance) => for that need a way to differentiate them. best way = color  
+
+wanna plot the weight by date and cultivar that are two categorical variable; gonna use weight in the y axis, date for the x axis, and cultivar as third variable 
+-->
+
+## Multi-dimensional bar charts 
+
+- Possibility to add a third variable
+- Use `fill` to add the variable, and `dodge` to determine where to put the new bars
+```{r, echo = TRUE, eval = FALSE}
+ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) + 
+  geom_bar(stat = "identity", position="dodge")
+ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) +  
+  geom_bar(stat = "identity")
+```
+```{r, echo= FALSE, fig.align='center'}
+x <- ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) +geom_bar(stat = "identity", position="dodge")
+y <- ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) + geom_bar(stat = "identity")
+ggarrange(x, y, nrow = 1, ncol = 2, labels = c("w/ dodge","w/out dodge"))
+```
+
+
+<!-- here, the thrid variable affects what to plot => first function
+    dodge contrary has to do with where to plot the variable => second function
+    
+what's hapenning? by adding fill, we specify an "aesthetics" that tells ggplot to divide the data with an additional category, changing the filling color 
+-> other aesthetics, e.g. linestyle = change the linestyles of the bars, or colours, which change the outline. but not very useful in this case ! will be later on though
+    -->
+
+## Discrete histograms
+
+- To have counts on the $y$-axis instead of values
+```{r, echo = TRUE,fig.align='center'}
+ggplot(diamonds, aes(x=cut)) + geom_bar()
+```
+
+- Pretty much a plot of `table(diamonds$cut)`
+- If used a continuous variable instead of discrete one, would end up with a histogram
+
+## Customization
+
+- By default, bar graphs use a dark grey for the bars with no outline 
+- Use `fill` and `colour` to specify the color of the bars and the outline 
+```{r, echo = TRUE, fig.align='center'}
+ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black")
+```
+<!-- note that clearly the colours have nothing to do with the data we are plotting => go in the second function -->
+
+## Customization
+
+- Can use pre-defined palette
+- Find the list [here](http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/figure/unnamed-chunk-14-1.png)
+```{r, echo = TRUE, fig.align='center'}
+ggplot(cabbage_exp, aes(x=Date, y=Weight, fill=Cultivar)) +
+  geom_bar(stat = "identity", position="dodge", colour="black") +
+  scale_fill_brewer(palette="Pastel1")
+```
+
+## Customization
+
+- Can also set the color manually 
+```{r, echo = FALSE}
+upc <- subset(uspopchange, rank(Change)>40)
+```
+```{r, echo = TRUE, fig.align='center'}
+ggplot(upc, aes(x=reorder(Abb, Change), y=Change, fill=Region)) +
+  geom_bar(stat="identity", colour="black") +
+  scale_fill_manual(values=c("#669933", "#FFCC66"))
+```
+
+<!-- looks complicated? it is not!
+  
+plot is about plotting the 10 US states with the greatest increase in population from 2000 to 2010, differentiting them by state! 
+  
+  1. differentiatge again with fill = Region 
+  1. the color: done via the function scale_fill_manual
+  1. note that we re-order the bar by their actual values on the x-axis, via reorder(x-variable, y-variable)
+-->
+
+## Labels 
+
+- Can make your plot clearer by adding some texts on each bar, via `geom_text()` 
+```{r, eval = FALSE}
+ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black") +
+  geom_text(aes(label=weight), vjust=1.5, colour="black")
+
+ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black") +
+  geom_text(aes(label=weight), vjust=-0.5, colour="black") + 
+  ylim(0, max(pg_mean$weight) * 1.05)
+```
+```{r, fig.align='center', echo = FALSE}
+x <- ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black") +
+  geom_text(aes(label=weight), vjust=1.5, colour="black")
+y <- ggplot(pg_mean, aes(x=group, y=weight)) +
+  geom_bar(stat="identity", fill="lightblue", colour="black") +
+  geom_text(aes(label=weight), vjust=-0.5, colour="black") + ylim(0, max(pg_mean$weight) * 1.05)
+ggarrange(x, y, nrow = 1, ncol = 2)
+```
+
+<!-- in geom_text(), need to 
+  1. specify the source of the label, here the weight (= y-axis) 
+  2. vjust helps to adjust the place of the test above or below the tops of the bar 
+  
+  NOTE: what have i done in the second plot? i've adjusted the limits of the y-axis so that the text that i put above the bars remains in the plot. 
+  done that with y_lim 
+  
+Start to understand how ggplot2 works? all about sum. wanna modify a default feature: most of the time, add an element via+ 
+ -->
+ 
+## Clevevand Dot Plot 
+
+- Simplest way to create a dot plot is with `geom_point()`
+```{r, fig.align='center', echo = TRUE}
+ggplot(tophitters2001[1:25, ], aes(x=avg, y=name)) + geom_point()
+```
+
+<!-- 
+why isn't that a nice graph?
+
+1. the names are sorted alphabetically. why? by default, R sorts the variable the easiest way possible. here, the easiest way is alphabetical.
+but don't really care; would prefer the name to be sorted by average rather than by alphabetical order 
+-->
+
+## Clevevand Dot Plot 
+
+- Order again thanks to `reorder()`
+```{r, fig.align='center', echo = TRUE}
+ggplot(tophitters2001[1:25, ], aes(x=avg, y=reorder(name, avg))) +
+  geom_point(size = 3) + theme_bw() + 
+  theme(panel.grid.major.x = element_blank(), 
+        panel.grid.minor.x = element_blank(), 
+        panel.grid.major.y = element_line(colour = "grey60", linetype = "dashed"))
+```
+
+<!-- WHAT4S GOING ON?
+used this graph also to change a bit the theme 
+  1. increases the size of the points, easy 
+  1. set the theme in black & white -- more on that later 
+  1. additionally, re-mastered a bit the original theme 
+    1. removed the minor and major x grid 
+    1. set the major y grid lines as dashed and grey!
+-->
+
+# Line graphs
+
+## Basic 
+
+- Mostly used to plot a discrete or continuous variable ($y$-axis) against a continuous variable ($x$-axis)
+- Similar to the previous syntax but use `geom_line()`
+- Customize the line within `geom_line()`
+```{r, eval = FALSE}
+ggplot(BOD, aes(x=Time, y=demand)) + geom_line() + ylim(0, max(BOD$demand))
+ggplot(BOD, aes(x=Time, y=demand)) + 
+  geom_line(linetype = "dashed", size = 1, colour = "blue") + 
+  ylim(0, max(BOD$demand))
+```
+```{r, fig.align='center', echo = FALSE}
+x <- ggplot(BOD, aes(x=Time, y=demand)) + geom_line() + ylim(0, max(BOD$demand))
+y <- ggplot(BOD, aes(x=Time, y=demand)) + geom_line(linetype = "dashed", size = 1, colour = "blue") + ylim(0, max(BOD$demand))
+ggarrange(x, y, nrow = 1, ncol = 2)
+```
+
+## Interpolation
+
+- `ggplot2` uses linear interpolation between the points supplied
+- Can be very useful to plot the data points on top of the line with `geom_point()`, that can also be customized
+```{r, eval = FALSE}
+ggplot(BOD, aes(x=Time, y=demand)) + geom_line() + 
+  geom_point(size = 4, shape = 22, colour = "darkred", fill = "pink")
+ggplot(worldpop, aes(x=Year, y=Population)) + geom_line() + 
+  geom_point() + scale_y_log10()
+```
+```{r, fig.align='center', echo = FALSE}
+x <- ggplot(BOD, aes(x=Time, y=demand)) + geom_line() + geom_point(size = 4, shape = 22, colour = "darkred", fill = "pink")
+y <- ggplot(worldpop, aes(x=Year, y=Population)) + geom_line() + geom_point() + scale_y_log10()
+ggarrange(x, y, nrow = 1, ncol = 2)
+```
+
+## Different symbols 
+
+![](https://i.imgur.com/67l2HSB.png)
+
+<!-- what do you notice? 
+automatically, ggplot treats the x-variable as continuous => will always linearly interpolate between the data points you are supplying it 
+in the first plot, notice that for t = 6, missing data, so the observed lined might not be very accurate 
+similarly in the second plot: many more points in the recent years => the line's much more accurate there than at the beginning
+-->
+
+## Multiple lines
+
+- Can differentiate the lines with `colour`, `linetype`; if also include data points, can also use `shape` or `fill` to differentiate 
+```{r, echo = FALSE}
+require(plyr)
+```
+```{r, echo = TRUE} 
+tooth <- ddply(ToothGrowth, c("supp", "dose"), summarise, length = mean(len))
+```
+```{r, eval = FALSE}
+ggplot(tooth, aes(x = dose, y = length)) + geom_line()
+ggplot(tooth, aes(x = dose, y = length, linetype = supp)) + geom_line()
+```
+```{r, fig.align='center', echo = FALSE}
+x <- ggplot(tooth, aes(x = dose, y = length)) + geom_line()
+y <- ggplot(tooth, aes(x = dose, y = length, linetype = supp)) + geom_line()
+ggarrange(x, y, nrow = 1, ncol = 2)
+```
+
+<!-- as we saw in the lecture on data frame, create a new data frame that takes the mean per dose and per supp of len
+
+then plot the length against the dose; note that if we do not differentiage by supp, the plot is not as expected; reason: multiple data points at each x, and ggplot thinks they are all in one group; instead, if we differentiate them by supp, then only one data point per x 
+
+NOTE: one of the pitfalls of ggplot. not designed to add different layers to a plot, as you would do with R basic by adding lines or points to a graph. need to do it all at once...
+-->
+
+## Shaded area
+
+- Use `geom_area()`, with useful arguments: `colour`, `fill` and `alpha`
+<!-- alpha manages the opacity of the plot-->
+- Particularly useful for time series 
+<!-- time series are a particular data structure in R; kinda like a vector, but also include information on the timing: the beinning, the ending and the frequency-->
+```{r, echo = TRUE} 
+str(sunspot.year)
+attributes(sunspot.year)
+sunspotyear <- data.frame(
+  Year = as.numeric(time(sunspot.year)),
+  Sunspots = as.numeric(sunspot.year)
+)
+```
+
+## Shaded area
+
+- Use `geom_area()`, with useful arguments: `colour`, `fill` and `alpha`
+<!-- alpha manages the opacity of the plot-->
+- Particularly useful for time series 
+```{r, eval = FALSE} 
+ggplot(sunspotyear, aes(x=Year, y=Sunspots)) +
+  geom_area(colour="black", fill="blue", alpha=.2)
+ggplot(sunspotyear, aes(x=Year, y=Sunspots)) +
+  geom_area(fill="blue", alpha=.2) + geom_line()
+```
+```{r, fig.align='center', echo = FALSE} 
+x <- ggplot(sunspotyear, aes(x=Year, y=Sunspots)) +
+  geom_area(colour="black", fill="blue", alpha=.2)
+y <- ggplot(sunspotyear, aes(x=Year, y=Sunspots)) +
+  geom_area(fill="blue", alpha=.2) + geom_line()
+ggarrange(x, y, nrow = 2, ncol = 1)
+```
+
+<!-- notice: nicer to not set a colour around the shaded area, and a line instead; otherwise even the bottom of the area is contoured-->
+
+## Confidence region
+
+- Need to do things
+
+    1. plot the upper and lower bound 
+    1. find a nice way to plot them 
+
+- Use `geom_ribbon()` combined with `ymin` and `ymax`
+```{r, fig.align='center', echo = TRUE} 
+ggplot(subset(climate, Source == "Berkeley"), aes(x=Year, y=Anomaly10y)) +
+  geom_ribbon(aes(ymin=Anomaly10y-Unc10y, ymax=Anomaly10y+Unc10y), alpha=0.2) + 
+  geom_line()
+```
+
+<!-- in clim, 
+1. Anomaly10y is a 10-year running average of the deviation (in
+Celsius) from the average 1950–1980 temperature,
+1. Unc10y is the 95% confidence interval.
+
+Why do we add geom_line() after the ribbon? so that the line is plotted on top of the ribbon -- otherwise would not see it! -->
+
+## Confidence region: exerice 
+
+- **Exercice**: find an easier way, without using `geom_ribbon`, to plot the 95% CI
+
+## Confidence region: solution 
+
+- **Exercice**: find an easier way, without using `geom_ribbon`, to plot the 95% CI
+- Solution: simply use `geom_line()`
+```{r, fig.align='center', echo = TRUE}
+ggplot(clim, aes(x=Year, y=Anomaly10y)) +
+  geom_line(aes(y=Anomaly10y-Unc10y), linetype="dotted") +
+  geom_line(aes(y=Anomaly10y+Unc10y), linetype="dotted") +
+  geom_line()
+```
+
+# Scatter plots
+
